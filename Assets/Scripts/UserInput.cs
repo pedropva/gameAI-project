@@ -12,6 +12,8 @@ public class UserInput : MonoBehaviour {
 	private Vector3 move; //our move vector
 
 	public bool aim; //if we are aiming
+	public bool squat;
+	public bool jump;
 	public float aimingWeight; //the aiming weight, helps with IK
 
 	public bool lookInCameraDirection; // if we want the character to look at the same direction as the camera
@@ -23,9 +25,6 @@ public class UserInput : MonoBehaviour {
 
 	public bool debugShoot; //helps us debug the shooting (basically shoots the current weapon)
 	WeaponManager.WeaponType weaponType; //the current weapon type we have equipped
-
-	CapsuleCollider col; //reference to our collider
-	float startHeight; //we store the starting heigh of our collider here
 
 
 	//Ik stuff
@@ -65,9 +64,7 @@ public class UserInput : MonoBehaviour {
 		//and our weapon manager
 		weaponManager = GetComponent<WeaponManager>();
 		//and the collider
-		col = GetComponent<CapsuleCollider>();
-		//store the starting height
-		startHeight = col.height;
+
 
 		//And setup the reference to the FreeCameraLook, 
 		//but since we already have store the camera, 
@@ -75,13 +72,13 @@ public class UserInput : MonoBehaviour {
 		cameraFunctions = Camera.main.transform.root.GetComponent<FreeCameraLook>();
 		
 		//Store the offset of the crosshair
-		offsetCross = cameraFunctions.crosshairOffsetWiggle;
+		//offsetCross = cameraFunctions.crosshairOffsetWiggle;
 	}
 
 	//Function that corrects the Ik depending on the current weapon type
 	void CorrectIK()
 	{
-		weaponType = weaponManager.weaponType;
+		//weaponType = weaponManager.weaponType;
 
 		if(!ik.DebugAim)
 		{
@@ -101,34 +98,7 @@ public class UserInput : MonoBehaviour {
 		}
 	}
 
-	void AdditionalInput()
-	{
-		//if we are running
-		if(anim.GetFloat("Forward")> 0.5f)
-		{
-			//and we press crouch
-			if(Input.GetButtonDown("Crouch"))
-			{
-				//we slide, so tell the animator to play the slide animation
-				//The transition we set it was with the Vault trigger
-				anim.SetTrigger("Vault");
-			}
-		}
-	}
 
-	void HandleCurves()
-	{
-		//Get the stored curve from the animator
-		float sizeCurve = anim.GetFloat("ColliderSize");
-		//and the new center we want for the capsule collider
-		float newYcenter = 0.3f;
-
-		//And lerp between the original height and center and the new ones, depending on t = curve
-		float lerpCenter = Mathf.Lerp(1,newYcenter,sizeCurve);
-		col.center = new Vector3(0,lerpCenter,0);
-		col.height = Mathf.Lerp(startHeight, 0.5f, sizeCurve);
-
-	}
 
 	void Update()
 	{
@@ -136,11 +106,15 @@ public class UserInput : MonoBehaviour {
 
 		if(!ik.DebugAim) //if we do not debug the aim
 		aim = Input.GetMouseButton (1); //then the aim bool is controlled by the right mouse click
-
+		jump = Input.GetKey (KeyCode.Space);
+		if(Input.GetKeyDown (KeyCode.C)){
+			squat = !squat; 
+		}	
 		//the same goes for the aim of the weapon manager
-		weaponManager.aim = aim;
+		//weaponManager.aim = aim;
 
 		//if we are aiming
+		/*
 		if(aim)
 		{
 			//And our active weapon can't burst fire
@@ -154,7 +128,7 @@ public class UserInput : MonoBehaviour {
 					//weaponManager.FireActiveWeapon();
 					ShootRay();//Call our shooting ray, see below
 					//and wiggle our crosshair and camera
-					cameraFunctions.WiggleCrosshairAndCamera(weaponManager.ActiveWeapon, true);
+					//cameraFunctions.WiggleCrosshairAndCamera(weaponManager.ActiveWeapon, true);
 				}
 			}
 			else //if it can burst fire
@@ -169,7 +143,6 @@ public class UserInput : MonoBehaviour {
 				}
 			}
 		}
-
 		//Switches between our weapons, linear
 		if(Input.GetAxis("Mouse ScrollWheel") <= -0.1f)
 			{
@@ -180,9 +153,8 @@ public class UserInput : MonoBehaviour {
 			{
 				weaponManager.ChangeWeapon(true);
 			}
-
-		AdditionalInput();
-		HandleCurves();
+		*/
+		//HandleCurves();
 	}
 
 	//the prefab for our bullets
@@ -282,8 +254,8 @@ public class UserInput : MonoBehaviour {
 			Vector3 lookPosition = ray.GetPoint(ik.point);
 
 			//and apply the rotation to the bone
-			ik.spine.LookAt(lookPosition);
-			ik.spine.Rotate(eulerAngleOffset, Space.Self);
+			//ik.spine.LookAt(lookPosition);
+			//ik.spine.Rotate(eulerAngleOffset, Space.Self);
 		}
 	}
 
@@ -298,11 +270,7 @@ public class UserInput : MonoBehaviour {
 		horizontal = Input.GetAxis("Horizontal");
 		vertical = Input.GetAxis("Vertical");
 
-		//basically this makes the crosshair expand depending if there is any movement
-		if(horizontal < -offsetCross || horizontal > offsetCross || vertical < -offsetCross || vertical > offsetCross)
-		{
-			cameraFunctions.WiggleCrosshairAndCamera(weaponManager.ActiveWeapon, false);
-		}
+
 
 		//if we are not aiming
 		if(!aim)
@@ -337,8 +305,7 @@ public class UserInput : MonoBehaviour {
 			//and we directly manipulate the animator
 			//this works because we've set up from our other script
 			//to take every movement in the animator and convert it to a force to be applied to the rigidbody
-			anim.SetFloat("Forward",vertical);
-			anim.SetFloat("Turn",horizontal);
+			anim.SetFloat("Speed",vertical);
 		}
 
 		if (move.magnitude > 1) //Make sure that the movement is normalized
@@ -360,7 +327,7 @@ public class UserInput : MonoBehaviour {
 			if(walkToggle) {
 				walkMultiplier = 0.5f;
 			} else {
-				walkMultiplier = 1;
+				walkMultiplier = 1f;
 			}
 		}
 
@@ -371,6 +338,6 @@ public class UserInput : MonoBehaviour {
 		move *= walkMultiplier;
 
 		//pass it to our move function from our character movement script
-		character.Move (move,aim,lookPos);
+		character.Move (move,aim,lookPos,squat,jump);
 	}
 }

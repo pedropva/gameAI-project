@@ -17,7 +17,7 @@ public class CharMove : MonoBehaviour {
 
 	Vector3 moveInput; //The move vector
 	float turnAmount; //the calculated turn amount to pass to mecanim
-	float forwardAmount; //the calculated forward amount to pass to mecanim
+	public float forwardAmount; //the calculated forward amount to pass to mecanim
 	Vector3 velocity; //the 3d velocity of the character
 
 	//We will use this on later videos probably
@@ -29,17 +29,24 @@ public class CharMove : MonoBehaviour {
 	float autoTurnThreshold = 10; //The threshold before the character turns to face the camera
 	float autoTurnSpeed = 20; //How fast will he turn
 	bool aim; //If we are aiming
+	bool squat;
+	bool jump;
 	Vector3 currentLookPos; //where we are currently looking
 
 	Rigidbody rigidBody; //reference to our rigidbody
 
 	float lastAirTime; //our airtime
-	Collider col; //Collider reference
-	
+
 	//our two physics materials where we assign them depending on the occasion
 	public PhysicMaterial highFriction;
 	public PhysicMaterial lowFriction;
 
+
+	CapsuleCollider col; //reference to our collider
+	float startHeight; //we store the starting heigh of our collider here
+	float oldYcenter;
+	float oldRadius;
+	float newRadius;
 
 	// Use this for initialization
 	void Start () {
@@ -52,7 +59,13 @@ public class CharMove : MonoBehaviour {
 
 		//Setup the reference to the rigidBody and our collider
 		rigidBody = GetComponent<Rigidbody>();
-		col = GetComponent<Collider>();
+		col = GetComponent<CapsuleCollider>();
+		//store the starting height
+		startHeight = col.height;
+		//store the old Y heihg of the center
+		oldYcenter = col.center.y;
+		oldRadius = col.radius;
+		newRadius = oldRadius * 1.5f;
 	}
 
 
@@ -94,7 +107,7 @@ public class CharMove : MonoBehaviour {
 	}
 
 
-	public void Move(Vector3 move, bool aim, Vector3 lookPos)
+	public void Move(Vector3 move, bool aim, Vector3 lookPos,bool squat, bool jump)
 	{
 		//Vector3 move is the input in world space
 
@@ -105,6 +118,8 @@ public class CharMove : MonoBehaviour {
 		//pass the variable status to the local variables
 		this.moveInput = move; 
 		this.aim = aim; 
+		this.squat = squat;
+		this.jump = jump;
 		this.currentLookPos = lookPos;
 
 		velocity = rigidBody.velocity; //store the current velocity
@@ -121,7 +136,6 @@ public class CharMove : MonoBehaviour {
 			//Applys extra rotation speed so that the character turns faster
 			ApplyExtraTurnRotation ();
 		}
-
 		//As the name says, checks if we are on the ground
 		GroundCheck ();
 		//Assigns the correct physics material depending on the occasion
@@ -139,7 +153,7 @@ public class CharMove : MonoBehaviour {
 
 		//Update the Animator parameters
 		UpdateAnimator ();
-	
+		HandleCollider();
 	}
 
 	void ConvertMoveInput ()
@@ -174,14 +188,14 @@ public class CharMove : MonoBehaviour {
 		if(!aim)
 		{
 			//pass the forward and turn amount to the animator
-			animator.SetFloat ("Forward", forwardAmount, 0.1f, Time.deltaTime);
-			animator.SetFloat ("Turn", turnAmount, 0.1f, Time.deltaTime);
+			//animator.SetBool("Aiming", false);
+			animator.SetFloat ("Speed", forwardAmount);
 		}
 
 		//If we are aiming and if we are on the ground we pass the appropriate values to the animator parameters
-		animator.SetBool("Aim",aim);
-		animator.SetBool("OnGround",onGround);
-
+		animator.SetBool("Aiming", aim);
+		//animator.SetFloat ("Speed", 0.5f);
+		animator.SetBool("Squat",squat);
 	}
 
 	//Checks if the character is on the ground or airborne
@@ -227,7 +241,23 @@ public class CharMove : MonoBehaviour {
 		}
 		
 	}
+	void HandleCollider(){
+		//and the new center we want for the capsule collider
+		float newYcenter = 0.3f;
+		if(squat){
 
+			col.center = new Vector3(0,newYcenter,0);
+			col.height = Mathf.Lerp(startHeight, 0.5f, 1f);
+		}else{
+			col.center = new Vector3(0,oldYcenter,0);
+			col.height = Mathf.Lerp(startHeight, 1f, 1f);
+		}
+		if (forwardAmount > 0.9f) {
+			col.radius = newRadius;
+		} else {
+			col.radius = oldRadius;
+		}
+	}
 	void TurnTowardsCameraForward()
 	{
 		//If the absolute value of the forward amount is less than .01
