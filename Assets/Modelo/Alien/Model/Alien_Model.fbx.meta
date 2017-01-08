@@ -1,0 +1,148 @@
+fileFormatVersion: 2
+guid: cbb276a0e3f98ec458232a65bd93193c
+timeCreated: 1460458514
+licenseType: Store
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: arm_L_1
+    100002: arm_L_2
+    100004: arm_L_3
+    100006: arm_R_1
+    100008: arm_R_2
+    100010: arm_R_3
+    100012: back
+    100014: body
+    100016: bones
+    100018: chest
+    100020: eye_L
+    100022: eye_R
+    100024: finger_L_1
+    100026: finger_L_2
+    100028: finger_L_3
+    100030: finger_L_4
+    100032: finger_L_5
+    100034: finger_R_1
+    100036: finger_R_2
+    100038: finger_R_3
+    100040: finger_R_4
+    100042: finger_R_5
+    100044: foot_L
+    100046: foot_R
+    100048: hand_L
+    100050: hand_R
+    100052: head
+    100054: leg_L_1
+    100056: leg_L_2
+    100058: leg_R_1
+    100060: leg_R_2
+    100062: model_new
+    100064: neck
+    100066: shoulder_L
+    100068: shoulder_R
+    100070: toe_L
+    100072: toe_R
+    100074: //RootNode
+    400000: arm_L_1
+    400002: arm_L_2
+    400004: arm_L_3
+    400006: arm_R_1
+    400008: arm_R_2
+    400010: arm_R_3
+    400012: back
+    400014: body
+    400016: bones
+    400018: chest
+    400020: eye_L
+    400022: eye_R
+    400024: finger_L_1
+    400026: finger_L_2
+    400028: finger_L_3
+    400030: finger_L_4
+    400032: finger_L_5
+    400034: finger_R_1
+    400036: finger_R_2
+    400038: finger_R_3
+    400040: finger_R_4
+    400042: finger_R_5
+    400044: foot_L
+    400046: foot_R
+    400048: hand_L
+    400050: hand_R
+    400052: head
+    400054: leg_L_1
+    400056: leg_L_2
+    400058: leg_R_1
+    400060: leg_R_2
+    400062: model_new
+    400064: neck
+    400066: shoulder_L
+    400068: shoulder_R
+    400070: toe_L
+    400072: toe_R
+    400074: //RootNode
+    4300000: model_new
+    9500000: //RootNode
+    13700000: model_new
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
