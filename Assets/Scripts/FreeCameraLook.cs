@@ -45,15 +45,7 @@ public class FreeCameraLook : Pivot {
 
 	void Start()
 	{
-		ChangeCrosshair();
 	}
-
-	public void ChangeCrosshair()
-	{
-		//activeCrosshair = GameObject.FindGameObjectWithTag("CrosshairManager").GetComponent<CrosshairManager>().activeCrosshair;
-	}
-
-	
 	// Update is called once per frame
 	protected override void Update () 
 	{
@@ -67,6 +59,22 @@ public class FreeCameraLook : Pivot {
 		}
 	}
 
+	public void OnAim(){
+		moveSpeed = 5f;
+		turnSpeed = 5f;
+		turnsmoothing = 0f;
+		tiltMax = 70f;
+		tiltMin = 45f;
+		lockCursor = false;
+	}
+	public void OffAim(){
+		moveSpeed = 5f;
+		turnSpeed = 10f;
+		turnsmoothing = .1f;
+		tiltMax = 75f;
+		tiltMin = 45f;
+		lockCursor = false;
+	} 
 	void OnDisable()
 	{
 		Cursor.lockState = CursorLockMode.None;
@@ -129,19 +137,4 @@ public class FreeCameraLook : Pivot {
 			//activeCrosshair.WiggleCrosshair();
 		}
 	}
-
-	public void WiggleCrosshairAndCamera(WeaponControl weapon, bool shoot)
-	{
-		activeCrosshair.WiggleCrosshair();
-
-		if(shoot)
-		{
-			offsetY = weapon.Kickback;
-		}
-	}
-
-
-
-
-
 }

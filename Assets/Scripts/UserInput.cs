@@ -9,12 +9,17 @@ public class UserInput : MonoBehaviour {
 	private CharMove character; //reference to our character movement script
 	private Transform cam; //reference to our case
 	private Vector3 camForward; //stores the forward vector of the cam
-	private Vector3 move; //our move vector
+	public Vector3 move; //our move vector
 
 	public bool aim; //if we are aiming
 	public bool squat;
 	public bool jump;
 	public float aimingWeight; //the aiming weight, helps with IK
+	public GameObject camera;
+	public float camDistanceNormal=-0.8f;
+	public float camDistanceAiming=-0.6f;
+
+	public GameObject myBones;
 
 	public bool lookInCameraDirection; // if we want the character to look at the same direction as the camera
 	Vector3 lookPos; //the looking position
@@ -105,7 +110,7 @@ public class UserInput : MonoBehaviour {
 		CorrectIK();
 
 		if(!ik.DebugAim) //if we do not debug the aim
-		aim = Input.GetMouseButton (1); //then the aim bool is controlled by the right mouse click
+			aim = Input.GetMouseButton (1) || debugShoot; //then the aim bool is controlled by the right mouse click
 		jump = Input.GetKey (KeyCode.Space);
 		if(Input.GetKeyDown (KeyCode.C)){
 			squat = !squat; 
@@ -114,19 +119,19 @@ public class UserInput : MonoBehaviour {
 		//weaponManager.aim = aim;
 
 		//if we are aiming
-		/*
 		if(aim)
 		{
 			//And our active weapon can't burst fire
 			if(!weaponManager.ActiveWeapon.CanBurst)
 			{
 				//and we left click
-				if(Input.GetMouseButtonDown(0) || debugShoot)
+				if((Input.GetMouseButtonDown(0))&& !anim.IsInTransition(0))
 				{
 					//Then shoot
-					anim.SetTrigger("Fire"); //play the animation to shoot
-					//weaponManager.FireActiveWeapon();
-					ShootRay();//Call our shooting ray, see below
+					if (weaponManager.FireActiveWeapon ()) {
+						anim.SetTrigger("Attack");
+					}
+					//ShootRay();//Call our shooting ray, see below
 					//and wiggle our crosshair and camera
 					//cameraFunctions.WiggleCrosshairAndCamera(weaponManager.ActiveWeapon, true);
 				}
@@ -136,10 +141,11 @@ public class UserInput : MonoBehaviour {
 				//then do the same as above for as long the fire mouse button is pressed
 				if(Input.GetMouseButton(0) || debugShoot)
 				{
-					anim.SetTrigger("Fire");
-					//weaponManager.FireActiveWeapon();
-					ShootRay();
-					cameraFunctions.WiggleCrosshairAndCamera(weaponManager.ActiveWeapon, true);
+					if (weaponManager.FireActiveWeapon ()) {
+						anim.SetTrigger("Attack");
+					}
+					//ShootRay();
+					//cameraFunctions.WiggleCrosshairAndCamera(weaponManager.ActiveWeapon, true);
 				}
 			}
 		}
@@ -153,7 +159,6 @@ public class UserInput : MonoBehaviour {
 			{
 				weaponManager.ChangeWeapon(true);
 			}
-		*/
 		//HandleCurves();
 	}
 
@@ -205,10 +210,10 @@ public class UserInput : MonoBehaviour {
 					direction = direction.normalized;
 					hit2.transform.GetComponent<Rigidbody>().AddForce(direction * 200);
 				}
-				else if(hit2.transform.GetComponent<Destructible>())
+				else if(hit2.transform.GetComponent<Enemie>())
 				{
 					//or if we hit an object that has a destructible component, then tell it to destruct
-					hit2.transform.GetComponent<Destructible>().destruct = true;
+					hit2.transform.GetComponent<Enemie>().hit = true;
 				}
 			}
 
@@ -234,8 +239,8 @@ public class UserInput : MonoBehaviour {
 		aimingWeight = Mathf.MoveTowards(aimingWeight, (aim)? 1.0f : 0.0f , Time.deltaTime * 5);
 		
 		//the normal and aiming state of the camera, basically how much close to the player it is
-		Vector3 normalState = new Vector3(0,0,-2f);
-		Vector3 aimingState = new Vector3(0,0,-0.5f);
+		Vector3 normalState = new Vector3(0,0,camDistanceNormal);
+		Vector3 aimingState = new Vector3(0,0,camDistanceAiming);
 		
 		//and that is lerped depending on t = aimigweight
 		Vector3 pos = Vector3.Lerp(normalState,aimingState,aimingWeight);
@@ -254,9 +259,13 @@ public class UserInput : MonoBehaviour {
 			Vector3 lookPosition = ray.GetPoint(ik.point);
 
 			//and apply the rotation to the bone
-			//ik.spine.LookAt(lookPosition);
-			//ik.spine.Rotate(eulerAngleOffset, Space.Self);
+			if (anim.GetCurrentAnimatorStateInfo(0).IsName("Aiming")||anim.GetCurrentAnimatorStateInfo(0).IsName("Fire")){
+				ik.spine.LookAt (lookPosition);
+				ik.spine.Rotate (eulerAngleOffset, Space.Self);
+			}
 		}
+
+
 	}
 
 	//our variables where we store our input and the offset of the crosshair 
@@ -275,6 +284,10 @@ public class UserInput : MonoBehaviour {
 		//if we are not aiming
 		if(!aim)
 		{
+			lookInCameraDirection = false;
+			if (camera.GetComponent<FreeCameraLook>()){
+				camera.GetComponent<FreeCameraLook> ().OffAim ();
+			}
 			if(cam != null) //if there is a camera
 			{
 				//Take the forward vector of the camera (from its transform) and 
@@ -294,7 +307,11 @@ public class UserInput : MonoBehaviour {
 		}
 		else //but if we are aiming
 		{
-			//we pass a zero to the move input
+			lookInCameraDirection = true;
+			if (camera.GetComponent<FreeCameraLook>()){
+				camera.GetComponent<FreeCameraLook> ().OnAim ();
+			}
+			/*//we pass a zero to the move input
 			move = Vector3.zero;
 
 			//we make the character look where the camera is looking
@@ -305,7 +322,8 @@ public class UserInput : MonoBehaviour {
 			//and we directly manipulate the animator
 			//this works because we've set up from our other script
 			//to take every movement in the animator and convert it to a force to be applied to the rigidbody
-			anim.SetFloat("Speed",vertical);
+			//anim.SetFloat("Speed",vertical);
+			*/
 		}
 
 		if (move.magnitude > 1) //Make sure that the movement is normalized

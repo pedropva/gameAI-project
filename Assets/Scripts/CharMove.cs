@@ -16,7 +16,7 @@ public class CharMove : MonoBehaviour {
 	Animator animator; 
 
 	Vector3 moveInput; //The move vector
-	float turnAmount; //the calculated turn amount to pass to mecanim
+	public float turnAmount; //the calculated turn amount to pass to mecanim
 	public float forwardAmount; //the calculated forward amount to pass to mecanim
 	Vector3 velocity; //the 3d velocity of the character
 
@@ -26,8 +26,8 @@ public class CharMove : MonoBehaviour {
 	//Reference to our IComparer
 	IComparer rayHitComparer;
 
-	float autoTurnThreshold = 10; //The threshold before the character turns to face the camera
-	float autoTurnSpeed = 20; //How fast will he turn
+	public float autoTurnThreshold = 10; //The threshold before the character turns to face the camera
+	public float autoTurnSpeed = 20; //How fast will he turn
 	bool aim; //If we are aiming
 	bool squat;
 	bool jump;
@@ -65,7 +65,7 @@ public class CharMove : MonoBehaviour {
 		//store the old Y heihg of the center
 		oldYcenter = col.center.y;
 		oldRadius = col.radius;
-		newRadius = oldRadius * 1.5f;
+		newRadius = oldRadius * 1.1f;
 	}
 
 
@@ -129,13 +129,10 @@ public class CharMove : MonoBehaviour {
 
 		//If we are aiming we won't to move the character in a different way, 
 		//so call this function when we are not aiming
-		if(!aim)
-		{
-			//Function that makes the character face the same direction as the camera
-			TurnTowardsCameraForward();
-			//Applys extra rotation speed so that the character turns faster
-			ApplyExtraTurnRotation ();
-		}
+		//Function that makes the character face the same direction as the camera
+		TurnTowardsCameraForward();
+		//Applys extra rotation speed so that the character turns faster
+		ApplyExtraTurnRotation ();
 		//As the name says, checks if we are on the ground
 		GroundCheck ();
 		//Assigns the correct physics material depending on the occasion
@@ -184,17 +181,16 @@ public class CharMove : MonoBehaviour {
 		//We want to use root motion
 		animator.applyRootMotion = true;
 
-		//and if we are not aiming
-		if(!aim)
-		{
-			//pass the forward and turn amount to the animator
-			//animator.SetBool("Aiming", false);
-			animator.SetFloat ("Speed", forwardAmount);
-		}
+		//pass the forward and turn amount to the animator
+		//animator.SetBool("Aiming", false);
+		animator.SetFloat ("Speed", forwardAmount);
 
 		//If we are aiming and if we are on the ground we pass the appropriate values to the animator parameters
-		animator.SetBool("Aiming", aim);
-		//animator.SetFloat ("Speed", 0.5f);
+		animator.SetBool ("Aiming", aim);
+		if (aim) {
+			animator.SetBool ("Squat", false);
+		}
+			//animator.SetFloat ("Speed", 0.5f);
 		animator.SetBool("Squat",squat);
 	}
 
@@ -260,6 +256,13 @@ public class CharMove : MonoBehaviour {
 	}
 	void TurnTowardsCameraForward()
 	{
+		if (aim) {
+			autoTurnThreshold = 0; //The threshold before the character turns to face the camera
+			autoTurnSpeed = 200; //How fast will he turn
+		} else {
+			autoTurnThreshold = 10; //The threshold before the character turns to face the camera
+			autoTurnSpeed = 20; //How fast will he turn
+		}
 		//If the absolute value of the forward amount is less than .01
 		if(Mathf.Abs(forwardAmount) < .01f)
 		{

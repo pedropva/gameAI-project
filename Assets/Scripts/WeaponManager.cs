@@ -17,6 +17,7 @@ public class WeaponManager : MonoBehaviour {
 	//our weapon types
 	public enum WeaponType
 	{
+		Melee,
 		Pistol,
 		Rifle
 	}
@@ -25,6 +26,8 @@ public class WeaponManager : MonoBehaviour {
 	public WeaponType weaponType;
 	
 	Animator anim; //reference to our animator
+	PlayerController controller;
+	public GameObject character;
 
 	float IKweight; //our ik weight
 
@@ -35,7 +38,7 @@ public class WeaponManager : MonoBehaviour {
 		//the active weapon is taken from our weapon list's index
 		ActiveWeapon = WeaponList[weaponNumber].GetComponent<WeaponControl>();
 		ActiveWeapon.equip = true; //and we equip that weapon
-
+		controller = character.GetComponent<PlayerController> ();
 		anim = GetComponent<Animator>(); //setup the refence to the animator
 
 		//and for every weapon that we have on our list, we inform it that they have an owner
@@ -62,11 +65,14 @@ public class WeaponManager : MonoBehaviour {
 		//we setup the correct animations for each weapon, based on weapon type
 		switch(weaponType)
 		{
+		case WeaponType.Melee:
+			controller.SetArsenal ("Empty");
+			break;
 		case WeaponType.Pistol:
-			anim.SetInteger("Weapon",0);
+			controller.SetArsenal ("Empty");
 			break;
 		case WeaponType.Rifle:
-			anim.SetInteger("Weapon",1);
+			controller.SetArsenal ("Rifle");
 			break;
 		}
 
@@ -86,12 +92,13 @@ public class WeaponManager : MonoBehaviour {
 	}
 
 	//this is an absolete function, we don't use it anymore but we might in the future
-	public void FireActiveWeapon()
+	public bool FireActiveWeapon()
 	{
 		if(ActiveWeapon != null)
 		{
-			ActiveWeapon.Fire();
+			return ActiveWeapon.Fire();
 		}
+		return false;
 	}
 
 	//picks the correct weapon from the weapon list, depending if we want to ascend or descend 

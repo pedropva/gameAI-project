@@ -1,32 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Destructible : MonoBehaviour {
-
-	public bool destruct;
-
-	public Transform[] debris;
+public class Enemy : MonoBehaviour {
+	public bool hit;
+	PlayerController controller;
+	public GameObject character;
 
 
 	// Use this for initialization
 	void Start () 
 	{
-		foreach(Transform go in debris)
-		{
-			go.gameObject.SetActive(false);
-		}
+		controller = character.GetComponent<PlayerController> ();
+
 	}
 
 	void Update ()
 	{
-		if(destruct)
+		if(hit)
 		{
-			foreach(Transform go in debris)
-			{
-				go.gameObject.SetActive(true);
-				go.parent = null;
-			}
-			Destroy(gameObject);
+			
 		}
 	}
 }

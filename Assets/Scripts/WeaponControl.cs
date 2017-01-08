@@ -17,7 +17,7 @@ public class WeaponControl : MonoBehaviour {
 	public GameObject HandPosition; //where the left hand should go
 	public GameObject bulletPrefab; //the bullet prefab, this is an absolete variable
 	public Transform bulletSpawn; //where the bullets come from
-	
+
 	//absolete variables
 	GameObject bulletSpawnGO; 
 	ParticleSystem bulletPart;
@@ -52,7 +52,6 @@ public class WeaponControl : MonoBehaviour {
 	void Start () 
 	{
 		curAmmo = MaxClipAmmo; 
-		
 		//we don't use this anymore
 		/*bulletSpawnGO = Instantiate(bulletPrefab, transform.position,Quaternion.identity) as GameObject;
 		bulletSpawnGO.AddComponent<ParticleDirection>();
@@ -60,9 +59,9 @@ public class WeaponControl : MonoBehaviour {
 		bulletPart = bulletSpawnGO.GetComponent<ParticleSystem>();*/
 
 		//store our references and our scale
-		audioSource = GetComponent<AudioSource>();
-		weaponAnim = GetComponent<Animator>();
-		scale = transform.localScale;
+		//audioSource = GetComponent<AudioSource>();
+		//weaponAnim = GetComponent<Animator>();
+		//scale = transform.localScale;
 	}
 	
 	// Update is called once per frame
@@ -70,73 +69,51 @@ public class WeaponControl : MonoBehaviour {
 	{
 		//the local scale is always the stored scale
 		//we do this because we don't have consistent scale for all our assets and parenting/unparenting children might mess with the scale
-		transform.localScale = scale;
+		//transform.localScale = scale;
+
+	}
+
+	public bool Fire()
+	{
 
 		//if the weapon is equipped
 		if(equip)
 		{
 			//put it to the correct position and rotation
-			transform.parent = transform.GetComponentInParent<WeaponManager>().transform.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightHand);
-			transform.localPosition = EquipPosition;
-			transform.localRotation = Quaternion.Euler(EquipRotation);
-
-			//we don't use this anymore but we will in the future
-			/*
-			if(fireBullet)
+			//transform.parent = transform.GetComponentInParent<WeaponManager>().transform.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightHand);
+			//transform.localPosition = EquipPosition;
+			//transform.localRotation = Quaternion.Euler(EquipRotation);
+			if (weaponType == WeaponManager.WeaponType.Melee) {
+				Debug.Log ("Melee attack");
+				return true;
+			}
+			if(curAmmo > 0 && (weaponType != WeaponManager.WeaponType.Melee))
 			{
-				if(curAmmo > 0)
-				{
-					curAmmo --;
-					bulletPart.Emit(1);
-					audioSource.Play();
+				curAmmo --;
+				//bulletPart.Emit(1);
+				//audioSource.Play();
 
-					if(weaponType == WeaponManager.WeaponType.Pistol)
-					weaponAnim.SetTrigger("Fire");
-				
-					fireBullet = false;
+					this.transform.GetComponent<MultiShooter> ().BasicBeamAttack();
+				fireBullet = false;
+				return true;
+			}
+			else
+			{
+				if(MaxAmmo >= MaxClipAmmo)
+				{
+					curAmmo = MaxClipAmmo;
+					MaxAmmo -= MaxClipAmmo;
 				}
 				else
 				{
-					if(MaxAmmo >= MaxClipAmmo)
-					{
-						curAmmo = MaxClipAmmo;
-						MaxAmmo -= MaxClipAmmo;
-					}
-					else
-					{
-						curAmmo = MaxClipAmmo - (MaxClipAmmo - MaxAmmo);
-						
-					}
+					curAmmo = MaxClipAmmo - (MaxClipAmmo - MaxAmmo);
 
-					fireBullet = false;
-					Debug.Log("Reload");
-				}
-			}*/
-		}
-		else//if it's not equiped
-		{
-			if(hasOwner)//but it has an owner
-			{
-				//put it on the rest position we setted up
-				switch (restPosition)
-				{
-					case RestPosition.RightHip:
-						transform.parent = transform.GetComponentInParent<WeaponManager>().transform.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightUpperLeg);
-						break;
-					case RestPosition.Waist:
-						transform.parent = transform.GetComponentInParent<WeaponManager>().transform.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Spine);
-						break;
 				}
 
-				transform.localPosition = UnEquipPosition;
-				transform.localRotation = Quaternion.Euler(UnEquipRotation);
+				fireBullet = false;
+				Debug.Log("Reload");
 			}
 		}
-	}
-
-	//absolete function
-	public void Fire()
-	{
-		fireBullet = true;
+	return false;
 	}
 }

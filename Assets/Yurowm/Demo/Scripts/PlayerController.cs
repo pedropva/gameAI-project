@@ -4,10 +4,10 @@ using System.Collections;
 [RequireComponent (typeof (Animator))]
 public class PlayerController : MonoBehaviour {
 
+	private GameObject rightGun;
 	public Transform rightGunBone;
 	public Transform leftGunBone;
 	public Arsenal[] arsenal;
-
 	private Animator animator;
 
 	void Awake() {
@@ -28,12 +28,15 @@ public class PlayerController : MonoBehaviour {
 					newRightGun.transform.parent = rightGunBone;
 					newRightGun.transform.localPosition = Vector3.zero;
 					newRightGun.transform.localRotation = Quaternion.Euler(90, 0, 0);
-					}
+					newRightGun.transform.localScale = new Vector3(0.3937008f,0.3937008f,0.3937008f);
+					rightGun = newRightGun;
+				}
 				if (hand.leftGun != null) {
 					GameObject newLeftGun = (GameObject) Instantiate(hand.leftGun);
 					newLeftGun.transform.parent = leftGunBone;
 					newLeftGun.transform.localPosition = Vector3.zero;
 					newLeftGun.transform.localRotation = Quaternion.Euler(90, 0, 0);
+					newLeftGun.transform.localScale = new Vector3(0.3937008f,0.3937008f,0.3937008f);
 				}
 				animator.runtimeAnimatorController = hand.controller;
 				return;
@@ -48,4 +51,15 @@ public class PlayerController : MonoBehaviour {
 		public GameObject leftGun;
 		public RuntimeAnimatorController controller;
 	}
+	public GameObject RightGun{
+		set{
+			rightGun = value; 
+		}
+		get{ 
+			if(rightGun != null && !rightGun.activeInHierarchy){
+				rightGun = null;
+			}
+			return rightGun;
+		}
+	}		
 }

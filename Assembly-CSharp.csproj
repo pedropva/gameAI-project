@@ -46,6 +46,33 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\BasicBeamShot\Character Controllers\Sources\Scripts\MouseLook.cs" />
+     <Compile Include="Assets\BasicBeamShot\SampleStage\GetUI.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\AutoDestroy.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\BM_WaveEffect.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\BasicBullet.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\BeamCollision.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\BeamLine.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\BeamParam.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\BeamWave.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\BillBoard.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\Create_MyLineMesh.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\Flash.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\GeroBeam.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\GeroBeamHit.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\GetColor_BeamLine.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\GetColor_Flash.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\GetColor_Particle.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\JumpScene.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\MouseTgt.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\MultiShooter.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\RandomRotate.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\ScaleWiggle.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\SceneMaster.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\ShooterRotate.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\ShotBase.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\ShotParticleEmitter.cs" />
+     <Compile Include="Assets\BasicBeamShot\Script\ShotParticle_Scale.cs" />
      <Compile Include="Assets\Scripts\ActiveStateToggler.cs" />
      <Compile Include="Assets\Scripts\ApplicationManager.cs" />
      <Compile Include="Assets\Scripts\ChangeColor.cs" />
@@ -56,6 +83,7 @@
      <Compile Include="Assets\Scripts\DragMe.cs" />
      <Compile Include="Assets\Scripts\DragPanel.cs" />
      <Compile Include="Assets\Scripts\DropMe.cs" />
+     <Compile Include="Assets\Scripts\Enemie.cs" />
      <Compile Include="Assets\Scripts\FreeCameraLook.cs" />
      <Compile Include="Assets\Scripts\PanelManager.cs" />
      <Compile Include="Assets\Scripts\Pivot.cs" />
@@ -81,14 +109,19 @@
      <Compile Include="Assets\Yurowm\Demo\Scripts\PlayerController.cs" />
      <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_eye.shader" />
      <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_fuku.shader" />
+     <None Include="Assets\BasicBeamShot\sh\Add_UVScroll_sh.shader" />
      <None Include="Assets\MenuBackground\Fonts\Jupiter\LICENSE.txt" />
      <None Include="Assets\UnityChan\license.txt" />
      <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_fuku_ds.shader" />
+     <None Include="Assets\BasicBeamShot\HowToUse_JP.txt" />
      <None Include="Assets\Yurowm\Shaders\SkinShader.shader" />
      <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_eye_blend.shader" />
      <None Include="Assets\Textures and Sprites\SF UI\Background\LICENSE.txt" />
      <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hair_ds.shader" />
+     <None Include="Assets\BasicBeamShot\sh\Sprite_Add_sh.shader" />
      <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_akarami_blend.shader" />
+     <None Include="Assets\BasicBeamShot\sh\GeroBeam_sh.shader" />
+     <None Include="Assets\BasicBeamShot\sh\BeamLine_sh.shader" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
      <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hair.shader" />
      <None Include="Assets\UnityChan\Stage\Shader\AlphaMask.shader" />
@@ -97,6 +130,8 @@
      <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hada.shader" />
      <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hada_blend.shader" />
      <None Include="Assets\Standard Assets\Characters\ThirdPersonCharacter\ThirdPersonCharacterGuidelines.txt" />
+     <None Include="Assets\BasicBeamShot\sh\AddColor_sh.shader" />
+     <None Include="Assets\BasicBeamShot\HowToUse_EN.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
