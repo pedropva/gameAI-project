@@ -6,6 +6,7 @@ public class BeamParam : MonoBehaviour {
 	public Color BeamColor = Color.white;
 	public float AnimationSpd = 0.1f;
 	public float Scale = 1.0f;
+	public int hitForce = 100;
 	public float MaxLength = 32.0f;
 	public bool bEnd = false;
 	public bool bGero = false;
@@ -16,6 +17,7 @@ public class BeamParam : MonoBehaviour {
 		this.AnimationSpd = param.AnimationSpd;
 		this.Scale = param.Scale;
 		this.MaxLength = param.MaxLength;
+		this.hitForce = param.hitForce;
 	}
 
 	void Start () {
@@ -26,6 +28,7 @@ public class BeamParam : MonoBehaviour {
 			this.AnimationSpd = param.AnimationSpd;
 			this.Scale = param.Scale;
 			this.MaxLength = param.MaxLength;
+			this.hitForce = param.hitForce;
 		}
 
 	}

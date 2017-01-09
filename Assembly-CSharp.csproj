@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{8C33489F-256F-7336-4A5E-FBD78D90283D}</ProjectGuid>
+    <ProjectGuid>{5EA900D6-8ECE-97C4-7BA4-F14704CB0E27}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -73,6 +73,17 @@
      <Compile Include="Assets\BasicBeamShot\Script\ShotBase.cs" />
      <Compile Include="Assets\BasicBeamShot\Script\ShotParticleEmitter.cs" />
      <Compile Include="Assets\BasicBeamShot\Script\ShotParticle_Scale.cs" />
+     <Compile Include="Assets\EnemyMove.cs" />
+     <Compile Include="Assets\Personagens\UnityChan\Scripts\CameraController.cs" />
+     <Compile Include="Assets\Personagens\UnityChan\Scripts\FaceUpdate.cs" />
+     <Compile Include="Assets\Personagens\UnityChan\Scripts\IdleChanger.cs" />
+     <Compile Include="Assets\Personagens\UnityChan\Scripts\SceneLoader.cs" />
+     <Compile Include="Assets\Personagens\UnityChan\Scripts\ThirdPersonCamera.cs" />
+     <Compile Include="Assets\Personagens\UnityChan\Scripts\UnityChanControlScriptWithRgidBody.cs" />
+     <Compile Include="Assets\Personagens\Yurowm\Demo\Scripts\Actions.cs" />
+     <Compile Include="Assets\Personagens\Yurowm\Demo\Scripts\CharacterPanel.cs" />
+     <Compile Include="Assets\Personagens\Yurowm\Demo\Scripts\CharacterViewer.cs" />
+     <Compile Include="Assets\Personagens\Yurowm\Demo\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\ActiveStateToggler.cs" />
      <Compile Include="Assets\Scripts\ApplicationManager.cs" />
      <Compile Include="Assets\Scripts\ChangeColor.cs" />
@@ -97,38 +108,29 @@
      <Compile Include="Assets\Scripts\WeaponControl.cs" />
      <Compile Include="Assets\Scripts\WeaponManager.cs" />
      <Compile Include="Assets\Scripts\followTarget.cs" />
-     <Compile Include="Assets\UnityChan\Scripts\CameraController.cs" />
-     <Compile Include="Assets\UnityChan\Scripts\FaceUpdate.cs" />
-     <Compile Include="Assets\UnityChan\Scripts\IdleChanger.cs" />
-     <Compile Include="Assets\UnityChan\Scripts\SceneLoader.cs" />
-     <Compile Include="Assets\UnityChan\Scripts\ThirdPersonCamera.cs" />
-     <Compile Include="Assets\UnityChan\Scripts\UnityChanControlScriptWithRgidBody.cs" />
-     <Compile Include="Assets\Yurowm\Demo\Scripts\Actions.cs" />
-     <Compile Include="Assets\Yurowm\Demo\Scripts\CharacterPanel.cs" />
-     <Compile Include="Assets\Yurowm\Demo\Scripts\CharacterViewer.cs" />
-     <Compile Include="Assets\Yurowm\Demo\Scripts\PlayerController.cs" />
-     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_eye.shader" />
-     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_fuku.shader" />
+     <Compile Include="Assets\inimiguinho.cs" />
+     <None Include="Assets\Personagens\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_eye.shader" />
+     <None Include="Assets\Personagens\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_fuku.shader" />
      <None Include="Assets\BasicBeamShot\sh\Add_UVScroll_sh.shader" />
      <None Include="Assets\MenuBackground\Fonts\Jupiter\LICENSE.txt" />
-     <None Include="Assets\UnityChan\license.txt" />
-     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_fuku_ds.shader" />
+     <None Include="Assets\Personagens\UnityChan\license.txt" />
+     <None Include="Assets\Personagens\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_fuku_ds.shader" />
      <None Include="Assets\BasicBeamShot\HowToUse_JP.txt" />
-     <None Include="Assets\Yurowm\Shaders\SkinShader.shader" />
-     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_eye_blend.shader" />
+     <None Include="Assets\Personagens\Yurowm\Shaders\SkinShader.shader" />
+     <None Include="Assets\Personagens\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_eye_blend.shader" />
      <None Include="Assets\Textures and Sprites\SF UI\Background\LICENSE.txt" />
-     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hair_ds.shader" />
+     <None Include="Assets\Personagens\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hair_ds.shader" />
      <None Include="Assets\BasicBeamShot\sh\Sprite_Add_sh.shader" />
-     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_akarami_blend.shader" />
+     <None Include="Assets\Personagens\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_akarami_blend.shader" />
      <None Include="Assets\BasicBeamShot\sh\GeroBeam_sh.shader" />
      <None Include="Assets\BasicBeamShot\sh\BeamLine_sh.shader" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
-     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hair.shader" />
-     <None Include="Assets\UnityChan\Stage\Shader\AlphaMask.shader" />
-     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_eyelash_blend.shader" />
+     <None Include="Assets\Personagens\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hair.shader" />
+     <None Include="Assets\Personagens\UnityChan\Stage\Shader\AlphaMask.shader" />
+     <None Include="Assets\Personagens\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_eyelash_blend.shader" />
      <None Include="Assets\MenuBackground\Materials\UI-Default-No-Alpha.shader" />
-     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hada.shader" />
-     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hada_blend.shader" />
+     <None Include="Assets\Personagens\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hada.shader" />
+     <None Include="Assets\Personagens\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hada_blend.shader" />
      <None Include="Assets\Standard Assets\Characters\ThirdPersonCharacter\ThirdPersonCharacterGuidelines.txt" />
      <None Include="Assets\BasicBeamShot\sh\AddColor_sh.shader" />
      <None Include="Assets\BasicBeamShot\HowToUse_EN.txt" />
@@ -150,16 +152,10 @@
  <Reference Include="UnityEngine.VR">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
- <Reference Include="UnityEditor.iOS.Extensions.Xcode">
- <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
- </Reference>
- <Reference Include="UnityEditor.iOS.Extensions.Common">
- <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Common.dll</HintPath>
- </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{7DDECA1C-D41F-FB4B-F1A7-599BDDEA06BB}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+      <Project>{CA90A3EB-859D-42FC-1161-4B10F908D9D3}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

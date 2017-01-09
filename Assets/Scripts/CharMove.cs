@@ -57,6 +57,8 @@ public class CharMove : MonoBehaviour {
 		//Call the functions that set's up the Animator
 		SetUpAnimator();
 
+
+
 		//Setup the reference to the rigidBody and our collider
 		rigidBody = GetComponent<Rigidbody>();
 		col = GetComponent<CapsuleCollider>();
@@ -186,7 +188,9 @@ public class CharMove : MonoBehaviour {
 		animator.SetFloat ("Speed", forwardAmount);
 
 		//If we are aiming and if we are on the ground we pass the appropriate values to the animator parameters
-		animator.SetBool ("Aiming", aim);
+		animator.SetBool ("Aiming", aim);	
+
+
 		if (aim) {
 			animator.SetBool ("Squat", false);
 		}
