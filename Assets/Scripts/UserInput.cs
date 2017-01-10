@@ -10,7 +10,7 @@ public class UserInput : MonoBehaviour {
 	private Transform cam; //reference to our case
 	private Vector3 camForward; //stores the forward vector of the cam
 	public Vector3 move; //our move vector
-
+	public int health=30;
 	public bool aim; //if we are aiming
 	public bool squat;
 	public bool jump;
@@ -357,5 +357,12 @@ public class UserInput : MonoBehaviour {
 
 		//pass it to our move function from our character movement script
 		character.Move (move,aim,lookPos,squat,jump);
+	}
+	public void Hit(){
+		anim.SetBool ("Damage", true);
+		health--;
+		if (health <= 0) {
+			anim.SetBool ("Death", true);
+		}
 	}
 }

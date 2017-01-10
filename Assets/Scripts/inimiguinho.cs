@@ -6,6 +6,8 @@ public class inimiguinho : MonoBehaviour {
 
 	public bool walkByDefault = true; //If we want to walk by default
 
+	public int health=10;
+
 	private EnemyMove character; //reference to our character movement script
 	private Transform cam; //reference to our case
 	public Vector3 move; //our move vector
@@ -58,68 +60,20 @@ public class inimiguinho : MonoBehaviour {
 		character = GetComponent<EnemyMove> ();
 		//and our animator
 		anim = GetComponent<Animator>();
+
+		cam = Camera.main.transform;
+
+	
+		targetedPlayer= GameObject.Find ("Player");
 	}
-
-	//Function that corrects the Ik depending on the current weapon type
-	void CorrectIK()
-	{
-		//weaponType = weaponManager.weaponType;
-
-		if(!ik.DebugAim)
-		{
-			switch(weaponType)
-			{
-			case WeaponManager.WeaponType.Pistol:
-				ik.aimingZ = 221.4f;
-				ik.aimingX = -71.5f;
-				ik.aimingY = 20.6f;
-				break;
-			case WeaponManager.WeaponType.Rifle:
-				ik.aimingZ = 212.19f;
-				ik.aimingX = -66.1f;
-				ik.aimingY = 14.1f;
-				break;
-			}
-		}
-	}
-
-
-
+		
 	void Update()
 	{
-		CorrectIK();
+		Debug.Log (agent.pathStatus.ToString());
+		if (agent.remainingDistance<=3f && !anim.IsInTransition (0) && anim.GetFloat ("Speed") < 0.5f) {
+			//Then attack
+			anim.SetBool ("Attack", true);
 
-		if(!ik.DebugAim) //if we do not debug the aim
-			aim = debugShoot; //then the aim bool is controlled by the right mouse click
-		//the same goes for the aim of the weapon manager
-		//weaponManager.aim = aim;
-
-		//if we are aiming
-		if(aim)
-		{
-			//And our active weapon can't burst fire
-			if(!weaponManager.ActiveWeapon.CanBurst)
-			{
-				//and we left click
-				if((Input.GetMouseButtonDown(0))&& !anim.IsInTransition(0))
-				{
-					//Then shoot
-						anim.SetTrigger("Attack");
-					//ShootRay();//Call our shooting ray, see below
-					//and wiggle our crosshair and camera
-					//cameraFunctions.WiggleCrosshairAndCamera(weaponManager.ActiveWeapon, true);
-				}
-			}
-			else //if it can burst fire
-			{
-				//then do the same as above for as long the fire mouse button is pressed
-				if(Input.GetMouseButton(0) || debugShoot)
-				{
-						anim.SetTrigger("Attack");
-					//ShootRay();
-					//cameraFunctions.WiggleCrosshairAndCamera(weaponManager.ActiveWeapon, true);
-				}
-			}
 		}
 	}
 		
@@ -162,29 +116,19 @@ public class inimiguinho : MonoBehaviour {
 
 
 		//if we are not aiming
-		if(!aim)
+		if (health > 0)
 		{
 			targetDirection = targetedPlayer.transform.position - this.transform.position;
 			targetDirection = targetDirection.normalized;
 			agent.SetDestination (targetedPlayer.transform.position);
-			/*
-			if(TargetedPlayer.transform.GetComponent<Rigidbody>()){
-				TargetedPlayer.transform.GetComponent<Rigidbody>().AddForce(direction * BP.hitForce);
-			}
-			*/
-			//Take the forward vector of the camera (from its transform) and 
-			// eliminate the y component
-			// scale the camera forward with the mask (1, 0, 1) to eliminate y and normalize it
-
-			//move input front/backward = forward direction of the camera * user input amount (vertical)
-			//move input left/right = right direction of the camera * user input amount (horizontal)
 
 			//move = vertical * camForward + horizontal * cam.right; //antigo move
 			move= targetDirection;
 		}
 		else //but if we are aiming
 		{
-
+			agent.Stop ();
+			//agent.SetPath (null);
 		}
 
 		if (move.magnitude > 1) //Make sure that the movement is normalized
@@ -218,25 +162,24 @@ public class inimiguinho : MonoBehaviour {
 
 		//pass it to our move function from our character movement script
 		character.Move (move,aim,lookPos,agent.velocity);
+		if (anim.IsInTransition (0)) {
+			//if (anim.GetCurrentAnimatorStateInfo (0).Equals ("Damage")) {
+			anim.SetBool ("Damage", false);
+			anim.SetBool ("Death", false);
+			if (anim.GetBool ("Attack") == true) {
+				anim.SetBool ("Attack", false);
+				targetedPlayer.GetComponent<UserInput> ().Hit ();
+			}
+			//}
+		}
 	}
 	public void Hit(){
-		anim.SetBool ("Damage", true);
-
-		//pass the new rotation to the IK bone
-		Vector3 eulerAngleOffset = Vector3.zero;
-		eulerAngleOffset = new Vector3(ik.aimingX,ik.aimingY,ik.aimingZ);
-
-		//do a ray from the center of the camera and forward
-		Ray ray = new Ray(cam.position, cam.forward);
-
-		//find where the character should look
-		Vector3 lookPosition = ray.GetPoint(ik.point);
-
-		//and apply the rotation to the bone
-
-		ik.spine.LookAt (lookPosition);
-		ik.spine.Rotate (eulerAngleOffset, Space.Self);
-
-		Debug.Log ("atingido");
+		if(!anim.IsInTransition(0))
+			anim.SetBool ("Damage", true);
+	
+		health--;
+		if (health <= 0) {
+			anim.SetBool ("Death",true);
+		}
 	}
 }

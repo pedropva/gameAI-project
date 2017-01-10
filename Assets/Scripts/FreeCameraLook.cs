@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections;
 
 public class FreeCameraLook : Pivot {
 
@@ -41,10 +42,6 @@ public class FreeCameraLook : Pivot {
 		cam = GetComponentInChildren<Camera>().transform;
 
 		pivot = cam.parent;
-	}
-
-	void Start()
-	{
 	}
 	// Update is called once per frame
 	protected override void Update () 

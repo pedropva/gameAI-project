@@ -14,7 +14,7 @@ public class BeamCollision : MonoBehaviour {
 	void Start () {
 		BL = (BeamLine)this.gameObject.transform.FindChild("BeamLine").GetComponent<BeamLine>();
 		BP = this.transform.root.gameObject.GetComponent<BeamParam>();
-		whoshooting = GameObject.Find ("Third Person Controler");
+		whoshooting = GameObject.Find ("Player");
 	}
 	
 	// Update is called once per frame

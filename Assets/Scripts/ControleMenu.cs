@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ControleMenu : MonoBehaviour {
 
     public void IniciarJogo()
     {
-        // Carrega cena da fase 1
+		SceneManager.LoadSceneAsync ("Fase 1");
     }
 
     public void FecharGame()
