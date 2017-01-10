@@ -44,7 +44,6 @@ public class BeamCollision : MonoBehaviour {
 				obj.GetComponent<BeamParam>().SetBeamParam(BP);
 				obj.transform.localScale = this.transform.localScale;
 			}
-			Debug.Log("hit " + hit.collider.gameObject.name);
 			Hit(hit.collider.gameObject,whoshooting);
 		}
 		/*
@@ -57,14 +56,15 @@ public class BeamCollision : MonoBehaviour {
 	public void Hit (GameObject who,GameObject whoshooted){
 		Vector3 direction = who.transform.position - whoshooted.transform.position;
 		direction = direction.normalized;
+		if (who.transform.GetComponent<Inimiguinho> ()) {
+			who.transform.GetComponent<Inimiguinho> ().Hit (direction,BP.hitForce);
+			return;
+		}
 		if (who.transform.GetComponent<Rigidbody> ()) {
 			who.transform.GetComponent<Rigidbody> ().AddForce (direction * BP.hitForce);
 		}
 		if (who.transform.GetComponent<Enemie> ()) {
 			who.transform.GetComponent<Enemie> ().hit = true;
-		}
-		if (who.transform.GetComponent<inimiguinho> ()) {
-			who.transform.GetComponent<inimiguinho> ().Hit ();
 		}
 	}
 }

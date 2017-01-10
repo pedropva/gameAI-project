@@ -13,6 +13,7 @@ public class WeaponControl : MonoBehaviour {
 	public int curAmmo;
 	public bool CanBurst;
 	public float Kickback = 0.1f;
+	public Collider other;
 
 	public GameObject HandPosition; //where the left hand should go
 	public GameObject bulletPrefab; //the bullet prefab, this is an absolete variable
@@ -22,7 +23,7 @@ public class WeaponControl : MonoBehaviour {
 	GameObject bulletSpawnGO; 
 	ParticleSystem bulletPart;
 	bool fireBullet;
-	AudioSource audioSource;
+	public AudioSource audioSource;
 	
 	//reference to our weapon manager from the parent
 	WeaponManager parentControl;
@@ -39,6 +40,8 @@ public class WeaponControl : MonoBehaviour {
 	public Vector3 UnEquipRotation;
 	//Debug Scale
 	Vector3 scale;
+	public bool fire;
+	public Animator anim;
 
 	//on which body part should the weapon be placed if it's not equipped?
 	public RestPosition restPosition;
@@ -51,7 +54,7 @@ public class WeaponControl : MonoBehaviour {
 
 	void Start () 
 	{
-		curAmmo = MaxClipAmmo; 
+		curAmmo = MaxClipAmmo;
 		//we don't use this anymore
 		/*bulletSpawnGO = Instantiate(bulletPrefab, transform.position,Quaternion.identity) as GameObject;
 		bulletSpawnGO.AddComponent<ParticleDirection>();
@@ -59,9 +62,10 @@ public class WeaponControl : MonoBehaviour {
 		bulletPart = bulletSpawnGO.GetComponent<ParticleSystem>();*/
 
 		//store our references and our scale
-		//audioSource = GetComponent<AudioSource>();
+		audioSource = GetComponent<AudioSource>();
 		//weaponAnim = GetComponent<Animator>();
 		//scale = transform.localScale;
+		anim = GameObject.Find("Player").GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -70,7 +74,7 @@ public class WeaponControl : MonoBehaviour {
 		//the local scale is always the stored scale
 		//we do this because we don't have consistent scale for all our assets and parenting/unparenting children might mess with the scale
 		//transform.localScale = scale;
-
+		this.fire = anim.GetBool ("Attack");
 	}
 
 	public bool Fire()
@@ -84,17 +88,19 @@ public class WeaponControl : MonoBehaviour {
 			//transform.localPosition = EquipPosition;
 			//transform.localRotation = Quaternion.Euler(EquipRotation);
 			if (weaponType == WeaponManager.WeaponType.Melee) {
-				Debug.Log ("Melee attack");
 				return true;
 			}
-			if(curAmmo > 0 && (weaponType != WeaponManager.WeaponType.Melee))
+			if(curAmmo > 0)
 			{
 				curAmmo --;
+				ControleGame.balas = curAmmo;
 				//bulletPart.Emit(1);
-				//audioSource.Play();
+				audioSource.Play();
 
-					this.transform.GetComponent<MultiShooter> ().BasicBeamAttack();
+				this.transform.GetComponent<MultiShooter> ().BasicBeamAttack();
+				ControleGame.shotsFired++;
 				fireBullet = false;
+				fire = false;	
 				return true;
 			}
 			else
@@ -109,11 +115,28 @@ public class WeaponControl : MonoBehaviour {
 					curAmmo = MaxClipAmmo - (MaxClipAmmo - MaxAmmo);
 
 				}
-
+				fire = false;	
 				fireBullet = false;
 				Debug.Log("Reload");
 			}
 		}
 	return false;
+	}
+	public void OnTriggerStay(Collider other){
+		Vector3 direction = other.transform.position - this.transform.position;
+		direction = direction.normalized;
+		if (weaponType == WeaponManager.WeaponType.Melee && fire) {
+			if (other.GetComponentInParent<Inimiguinho> ()) {
+				anim.SetBool("Hitting",true);
+			}else if (other.attachedRigidbody) {
+				other.attachedRigidbody.AddForce (direction * 1000);
+			}
+		}
+		fire = false;
+		this.other=other;
+	}
+	void OnTriggerExit(Collider other){
+		this.other = null;
+		anim.SetBool("Hitting",false);
 	}
 }

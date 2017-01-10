@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class inimiguinho : MonoBehaviour {
+public class Inimiguinho : MonoBehaviour {
 
 	public bool walkByDefault = true; //If we want to walk by default
 
 	public int health=10;
+	public bool alreadyDead=false;
 
 	private EnemyMove character; //reference to our character movement script
 	private Transform cam; //reference to our case
@@ -69,7 +70,6 @@ public class inimiguinho : MonoBehaviour {
 		
 	void Update()
 	{
-		Debug.Log (agent.pathStatus.ToString());
 		if (agent.remainingDistance<=3f && !anim.IsInTransition (0) && anim.GetFloat ("Speed") < 0.5f) {
 			//Then attack
 			anim.SetBool ("Attack", true);
@@ -168,18 +168,44 @@ public class inimiguinho : MonoBehaviour {
 			anim.SetBool ("Death", false);
 			if (anim.GetBool ("Attack") == true) {
 				anim.SetBool ("Attack", false);
-				targetedPlayer.GetComponent<UserInput> ().Hit ();
 			}
 			//}
 		}
 	}
 	public void Hit(){
-		if(!anim.IsInTransition(0))
+		Vector3 direction =  this.transform.position-targetedPlayer.transform.position;
+		direction = direction.normalized;
+		StartCoroutine(Damage(direction,20000f));
+
+	}
+	public void Hit(Vector3 direction,float hitForce){
+		if(!anim.IsInTransition(0) && health>0){
 			anim.SetBool ("Damage", true);
-	
-		health--;
-		if (health <= 0) {
+			this.GetComponentInParent<Rigidbody>().AddForce (direction * hitForce);
+			health--;
+		}
+
+		if (health <= 0 && !alreadyDead) {
 			anim.SetBool ("Death",true);
+			alreadyDead = true;
+			ControleGame.alienDown++;
+			ControleGame.pontos += 100;
+		}
+	}
+	IEnumerator Damage(Vector3 direction,float hitForce){
+		yield return new WaitForSecondsRealtime (0.001f);
+		if(!anim.IsInTransition(0) && health>0){
+			anim.SetBool ("Damage", true);
+			ControleGame.LandedShots++;
+			this.GetComponentInParent<Rigidbody>().AddForce (direction * hitForce);
+			health--;
+		}
+
+		if (health <= 0 && !alreadyDead) {
+			anim.SetBool ("Death",true);
+			alreadyDead = true;
+			ControleGame.alienDown++;
+			ControleGame.pontos += 100;
 		}
 	}
 }

@@ -56,6 +56,7 @@ public class UserInput : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
+		ControleGame.vida=health;
 		//Setup our camera reference
 		if(Camera.main != null)
 		{
@@ -259,7 +260,7 @@ public class UserInput : MonoBehaviour {
 			Vector3 lookPosition = ray.GetPoint(ik.point);
 
 			//and apply the rotation to the bone
-			if (anim.GetCurrentAnimatorStateInfo(0).IsName("Aiming")||anim.GetCurrentAnimatorStateInfo(0).IsName("Fire")){
+			if ((anim.GetCurrentAnimatorStateInfo(0).IsName("Aiming")||anim.GetCurrentAnimatorStateInfo(0).IsName("Fire")) && weaponManager.ActiveWeapon.weaponType != WeaponManager.WeaponType.Melee){
 				ik.spine.LookAt (lookPosition);
 				ik.spine.Rotate (eulerAngleOffset, Space.Self);
 			}
@@ -359,10 +360,20 @@ public class UserInput : MonoBehaviour {
 		character.Move (move,aim,lookPos,squat,jump);
 	}
 	public void Hit(){
+		StartCoroutine(Damage());
+
+	}
+	IEnumerator Damage(){
+		yield return new WaitForSecondsRealtime (0.5f);
 		anim.SetBool ("Damage", true);
-		health--;
+
 		if (health <= 0) {
 			anim.SetBool ("Death", true);
+			this.enabled = false;
+			anim.SetBool ("Death", true);
+		} else {
+			health--;
+			ControleGame.vida=health;
 		}
 	}
 }

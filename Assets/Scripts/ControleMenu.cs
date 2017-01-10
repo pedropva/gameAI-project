@@ -5,9 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class ControleMenu : MonoBehaviour {
 
-    public void IniciarJogo()
+    public void IniciarJogo(string nome)
     {
-		SceneManager.LoadSceneAsync ("Fase 1");
+		SceneManager.LoadScene(nome);
     }
 
     public void FecharGame()
