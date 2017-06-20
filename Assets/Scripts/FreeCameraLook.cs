@@ -60,16 +60,14 @@ public class FreeCameraLook : Pivot {
 		turnSpeed = 5f;
 		turnsmoothing = 0f;
 		tiltMax = 70f;
-		tiltMin = 45f;
-		lockCursor = false;
+		tiltMin = 40f;
 	}
 	public void OffAim(){
 		moveSpeed = 5f;
 		turnSpeed = 10f;
 		turnsmoothing = .1f;
 		tiltMax = 75f;
-		tiltMin = 45f;
-		lockCursor = false;
+		tiltMin = 50f;
 	} 
 	void OnDisable()
 	{

@@ -283,6 +283,7 @@ public class UserInput : MonoBehaviour {
 
 
 		//if we are not aiming
+		
 		if(!aim)
 		{
 			lookInCameraDirection = false;
@@ -306,27 +307,15 @@ public class UserInput : MonoBehaviour {
 				move = vertical * Vector3.forward + horizontal * Vector3.right;
 			}
 		}
+
 		else //but if we are aiming
 		{
-			lookInCameraDirection = true;
+			lookInCameraDirection = true;//bug de girar
 			if (camera.GetComponent<FreeCameraLook>()){
 				camera.GetComponent<FreeCameraLook> ().OnAim ();
 			}
-			/*//we pass a zero to the move input
-			move = Vector3.zero;
-
-			//we make the character look where the camera is looking
-			Vector3 dir = lookPos - transform.position;
-			dir.y = 0;
-			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 20 * Time.deltaTime);
-
-			//and we directly manipulate the animator
-			//this works because we've set up from our other script
-			//to take every movement in the animator and convert it to a force to be applied to the rigidbody
-			//anim.SetFloat("Speed",vertical);
-			*/
 		}
-
+		
 		if (move.magnitude > 1) //Make sure that the movement is normalized
 			move.Normalize ();
 
@@ -351,7 +340,7 @@ public class UserInput : MonoBehaviour {
 		}
 
 		//Our look position depends on if we want the character to look towards the camera or not
-		lookPos = lookInCameraDirection && cam != null ? transform.position + cam.forward * 100 : transform.position + transform.forward * 100;
+		//lookPos = lookInCameraDirection && cam != null ? transform.position + cam.forward * 100 : transform.position + transform.forward * 100;
 
 		//apply the multiplier to our move input
 		move *= walkMultiplier;
