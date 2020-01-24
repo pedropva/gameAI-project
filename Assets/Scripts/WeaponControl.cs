@@ -66,6 +66,7 @@ public class WeaponControl : MonoBehaviour {
 		//weaponAnim = GetComponent<Animator>();
 		//scale = transform.localScale;
 		anim = GameObject.Find("Player").GetComponent<Animator>();
+
 	}
 	
 	// Update is called once per frame
@@ -126,8 +127,8 @@ public class WeaponControl : MonoBehaviour {
 		Vector3 direction = other.transform.position - this.transform.position;
 		direction = direction.normalized;
 		if (weaponType == WeaponManager.WeaponType.Melee && fire) {
-			if (other.GetComponentInParent<Inimiguinho> ()) {
-				anim.SetBool("Hitting",true);
+			if (other.GetComponentInParent<AlienEnemy> ()) {
+				anim.SetBool("Attack",true);
 			}else if (other.attachedRigidbody) {
 				other.attachedRigidbody.AddForce (direction * 1000);
 			}
@@ -137,6 +138,6 @@ public class WeaponControl : MonoBehaviour {
 	}
 	void OnTriggerExit(Collider other){
 		this.other = null;
-		anim.SetBool("Hitting",false);
+		anim.SetBool("Attack",false);
 	}
 }

@@ -340,7 +340,7 @@ public class UserInput : MonoBehaviour {
 		}
 
 		//Our look position depends on if we want the character to look towards the camera or not
-		//lookPos = lookInCameraDirection && cam != null ? transform.position + cam.forward * 100 : transform.position + transform.forward * 100;
+		lookPos = lookInCameraDirection && cam != null ? transform.position + cam.forward * 100 : transform.position + transform.forward * 100;
 
 		//apply the multiplier to our move input
 		move *= walkMultiplier;

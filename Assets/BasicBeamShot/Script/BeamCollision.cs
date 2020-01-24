@@ -56,8 +56,8 @@ public class BeamCollision : MonoBehaviour {
 	public void Hit (GameObject who,GameObject whoshooted){
 		Vector3 direction = who.transform.position - whoshooted.transform.position;
 		direction = direction.normalized;
-		if (who.transform.GetComponent<Inimiguinho> ()) {
-			who.transform.GetComponent<Inimiguinho> ().Hit (direction,BP.hitForce);
+		if (who.transform.GetComponent<AlienEnemy> ()) {
+			who.transform.GetComponent<AlienEnemy> ().Hit (direction,BP.hitForce);
 			return;
 		}
 		if (who.transform.GetComponent<Rigidbody> ()) {

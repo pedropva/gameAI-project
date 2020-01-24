@@ -20,7 +20,6 @@ public class EnemyMove : MonoBehaviour {
 	public float forwardAmount; //the calculated forward amount to pass to mecanim
 	Vector3 velocity; //the 3d velocity of the character
 
-	//We will use this on later videos probably
 	float jumpPower = 10;
 
 	//Reference to our IComparer
@@ -46,7 +45,7 @@ public class EnemyMove : MonoBehaviour {
 	float oldYcenter;
 	float oldRadius;
 	float newRadius;
-
+	public int raycatHitsCount = 0; 
 
 	// Use this for initialization
 	void Start () {
@@ -151,6 +150,35 @@ public class EnemyMove : MonoBehaviour {
 		UpdateAnimator ();
 	}
 
+	public void MoveToTarget(GameObject target, float walkMultiplier, UnityEngine.AI.NavMeshAgent agent)
+	{
+
+		Vector3 targetDirection = target.transform.position - this.transform.position;
+		targetDirection = targetDirection.normalized;
+		Vector3 move = targetDirection;
+
+		//Look position
+		Vector3 lookPos = transform.position + transform.forward * 100;
+
+		if (move.magnitude > 1) //Make sure that the movement is normalized
+			move.Normalize ();
+
+		//apply the multiplier to our move vector
+		move *= walkMultiplier;
+
+		move = new Vector3(1.0f,0f,0f);
+		Debug.Log (move);
+		this.Move (move,aim,lookPos,agent.velocity);
+		if (animator.IsInTransition (0)) {
+			//if (animator.GetCurrentAnimatorStateInfo (0).Equals ("Damage")) {
+			animator.SetBool ("Damage", false);
+			animator.SetBool ("Death", false);
+			if (animator.GetBool ("Attack") == true) {
+				animator.SetBool ("Attack", false);
+			}
+			//}
+		}
+	}
 	void ConvertMoveInput ()
 	{
 		// convert the world relative moveInput vector into a local-relative
@@ -188,21 +216,28 @@ public class EnemyMove : MonoBehaviour {
 	//Checks if the character is on the ground or airborne
 	void GroundCheck ()
 	{
+		float raycastHeight = 3.48f;
 		//Create a ray with origin the character's transform + 0.5 on the y axis and direction the -y axis
-		Ray ray = new Ray (transform.position + Vector3.up * .5f, -Vector3.up); 
+		Ray ray = new Ray (transform.position + Vector3.up * raycastHeight, -Vector3.up); 
 
-		RaycastHit[] hits = Physics.RaycastAll (ray, .5f); //perform a raycast using that ray for a distance of 0.5
+		RaycastHit[] hits = Physics.RaycastAll (ray, raycastHeight); //perform a raycast using that ray for a distance of 0.5
 		rayHitComparer = new RayHitComparer();
 		System.Array.Sort (hits, rayHitComparer); //sort the hits using our comparer (based on distance)
-
-		if (velocity.y < jumpPower * .5f) { //if the character is not airborne due to a jump
-			//we will talk about jumping in future videos probably
+		raycatHitsCount = hits.Length;
+//		Debug.Log ("got "+ hits.Length + " hits!");
+//		foreach (var hit in hits) { //for each of the hits
+//			// check whether we hit a non-trigger collider (and not the character itself)
+//			if (!hit.collider.isTrigger) {
+//				
+//			}
+//		}
+		if (velocity.y < jumpPower * raycastHeight) { //if the character is not airborne due to a jump
 			//assume that the character is on the air and falling
 			onGround = false;
 			rigidBody.useGravity = true;
-
 			foreach (var hit in hits) { //for each of the hits
 				// check whether we hit a non-trigger collider (and not the character itself)
+
 				if (!hit.collider.isTrigger) {
 					// this counts as being on ground.
 

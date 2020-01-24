@@ -4,7 +4,7 @@ using System.Collections;
 public class BM_WaveEffect : MonoBehaviour {
 
 	public float InSize = 0.0f;
-	public float OutSize = 1.0f;
+	public float OutSize = 5.0f;
 	public float Height = 0.0f;
 
 	// Use this for initialization

@@ -32,7 +32,7 @@ public class DayTimeControl : MonoBehaviour {
 		}
 		if(mortos!=null)mortos.Clear();
 		foreach(GameObject a in aliens){
-			if(a.GetComponentInParent<Inimiguinho>().alreadyDead){
+			if(a.GetComponentInParent<AlienEnemy>().dead){
 				mortos.Add (a);
 				Naliens= aliens.Count - mortos.Count;
 			}
