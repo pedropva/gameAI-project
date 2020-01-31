@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class AlienEnemy : MonoBehaviour {
 
-	public bool walkByDefault = true; //If we want to walk by default
+	public bool runToggle = true; //change this variable to alternate between walking and running
 
 	public int health=10;
-	public float attackRange = 5f;
+	public float walkSpeed=10f;
+	public float runSpeed=100f;
+	public float attackRange = 1f;
 	public bool dead=false;
-	UnityEngine.AI.NavMeshAgent agent;
+	public float distanceToTarget;
 	private EnemyMove character; //reference to our character movement script
 	private Transform cam; //reference to our case
-	public GameObject targetedPlayer;
+	public GameObject currentTarget;
 	public Vector3 targetDirection;
 	public GameObject myBones;
 
@@ -25,85 +27,59 @@ public class AlienEnemy : MonoBehaviour {
 	[System.Serializable] public class IK
 	{
 		public Transform spine; //the bone where we rotate the body of our character from
-		//The Z/x/y values, doesn't really matter the values here since we ovveride them depending on the weapon
-		public float aimingZ = 213.46f; 
-		public float aimingX = -65.93f;
-		public float aimingY = 20.1f;
-		//The point in the ray we do from our camera, basically how far the character looks
-		public float point = 30; 
-
 	}
 		
 	// Use this for initialization
 	void Start ()
 	{
-		agent = GetComponent<UnityEngine.AI.NavMeshAgent> ();
 		//and our Character Movement
 		character = GetComponent<EnemyMove>();
 		//and our animator
 		anim = GetComponent<Animator>();
-		targetedPlayer= GameObject.Find ("Player");
-		if (agent.isActiveAndEnabled) {
-			agent.SetDestination (targetedPlayer.transform.position);
-		}
+		currentTarget = GameObject.Find ("Player");
 	}
 		
 	void Update()
-	{
-		if (agent.isActiveAndEnabled && !dead) {
-			if (targetedPlayer != null) {
-				if (agent.remainingDistance <= attackRange && !anim.IsInTransition (0)) {// && anim.GetFloat ("Speed") < 0.5f
-					//Then attack
-					anim.SetBool ("Attack", true);
+	{	
+		if (currentTarget != null && !dead) {
+			distanceToTarget = Vector3.Distance (currentTarget.transform.position, this.transform.position);
+			if (distanceToTarget <= attackRange && !anim.IsInTransition (0)) {// && anim.GetFloat ("Speed") < 0.5f
+				//Then attack
+				anim.SetBool ("Attack", true);
 
-				} else {
-					anim.SetBool ("Attack", false);	
-				}
+			} else {
+				anim.SetBool ("Attack", false);	
 			}
 		}
 	}
 
-	float GetWalkMultiplier(bool walkToggle)
+	float GetWalkMultiplier()
 	{
-		//the walk multiplier determines if the character is running or walking
-		//if walkByDefault is set and walkToggle is pressed
-		float walkMultiplier = 1;
-		if(walkByDefault) {
-			if(walkToggle) {
-				walkMultiplier = 1;
-			} else {
-				walkMultiplier = 0.5f;
-			}
-		} else {
-			if(walkToggle) {
-				walkMultiplier = 0.5f;
-			} else {
-				walkMultiplier = 1f;
-			}
+		if (runToggle) {
+			return runSpeed;
 		}
-		return walkMultiplier;
+		return walkSpeed;
 	}	
 
 	void FixedUpdate () 
 	{
-		bool walkToggle = false; //change this variable to alternate between walking and running
 		if (!dead) // of the character is alive
 		{
-			if (targetedPlayer != null) {
+			if (currentTarget != null && distanceToTarget > attackRange) { //if we have a target and we are out of the attack range we should go after it
 				//pass it to our move function from our character movement script
-				character.MoveToTarget (targetedPlayer, this.GetWalkMultiplier (walkToggle), agent);
+				character.MoveToTarget (currentTarget, this.GetWalkMultiplier ());
+			} else {
+				character.TurnAtTarget(currentTarget); // stop and just face the target
 			}
 		}
 		else //if the character is dead
 		{
-			targetedPlayer = null;
-			if (agent.isActiveAndEnabled) {
-				agent.Stop ();
-			}
+			//clear targets
+			currentTarget = null;
 		}
 	}
 	public void MeleeHit(float punchForce){
-		Vector3 direction =  this.transform.position-targetedPlayer.transform.position;
+		Vector3 direction =  this.transform.position-currentTarget.transform.position;
 		direction = direction.normalized;
 		this.Hit (direction, punchForce);
 
@@ -128,20 +104,5 @@ public class AlienEnemy : MonoBehaviour {
 		ControleGame.alienDown++;
 		ControleGame.pontos += 100;
 	}
-//	IEnumerator Damage(Vector3 direction,float hitForce){
-//		yield return new WaitForSecondsRealtime (0.001f);
-//		if(!anim.IsInTransition(0) && health>0){
-//			anim.SetBool ("Damage", true);
-//			ControleGame.LandedShots++;
-//			this.GetComponentInParent<Rigidbody>().AddForce (direction * hitForce);
-//			health--;
-//		}
-//
-//		if (health <= 0 && !dead) {
-//			anim.SetBool ("Death",true);
-//			dead = true;
-//			ControleGame.alienDown++;
-//			ControleGame.pontos += 100;
-//		}
-//	}
+
 }

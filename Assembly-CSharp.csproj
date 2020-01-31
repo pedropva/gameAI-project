@@ -101,6 +101,8 @@
      <Compile Include="Assets\Scripts\Enemie.cs" />
      <Compile Include="Assets\Scripts\EnemyMove.cs" />
      <Compile Include="Assets\Scripts\FreeCameraLook.cs" />
+     <Compile Include="Assets\Scripts\MinHeap.cs" />
+     <Compile Include="Assets\Scripts\Node.cs" />
      <Compile Include="Assets\Scripts\PanelManager.cs" />
      <Compile Include="Assets\Scripts\Pivot.cs" />
      <Compile Include="Assets\Scripts\ResizePanel.cs" />
@@ -113,7 +115,6 @@
      <Compile Include="Assets\Scripts\WeaponControl.cs" />
      <Compile Include="Assets\Scripts\WeaponManager.cs" />
      <Compile Include="Assets\Scripts\followTarget.cs" />
-     <Compile Include="Assets\Scripts\inimiguinho.cs" />
      <None Include="Assets\Personagens\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_eye.shader" />
      <None Include="Assets\Personagens\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_fuku.shader" />
      <None Include="Assets\BasicBeamShot\sh\Add_UVScroll_sh.shader" />
