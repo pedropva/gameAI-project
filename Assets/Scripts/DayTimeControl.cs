@@ -37,7 +37,7 @@ public class DayTimeControl : MonoBehaviour {
 				Naliens= aliens.Count - mortos.Count;
 			}
 		}
-		ControleGame.inimigos= Naliens;
+		Game.Gobals.inimigos= Naliens;
 		if (night==true && spawned ==false) {
 			if (Naliens < NMaxAliens + 5) {
 				//apaga os mortos

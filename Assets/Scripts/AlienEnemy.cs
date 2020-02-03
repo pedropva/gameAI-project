@@ -12,7 +12,7 @@ public class AlienEnemy : MonoBehaviour {
 	public float attackRange = 1f;
 	public bool dead=false;
 	public float distanceToTarget;
-	private EnemyMove character; //reference to our character movement script
+	private Movement.EnemyMove character; //reference to our character movement script
 	private Transform cam; //reference to our case
 	public GameObject currentTarget;
 	public Vector3 targetDirection;
@@ -33,7 +33,7 @@ public class AlienEnemy : MonoBehaviour {
 	void Start ()
 	{
 		//and our Character Movement
-		character = GetComponent<EnemyMove>();
+		character = GetComponent<Movement.EnemyMove>();
 		//and our animator
 		anim = GetComponent<Animator>();
 		currentTarget = GameObject.Find ("Player");
@@ -101,8 +101,8 @@ public class AlienEnemy : MonoBehaviour {
 		anim.SetBool ("Damage", false);
 		anim.SetBool ("Death",true);
 		dead = true;
-		ControleGame.alienDown++;
-		ControleGame.pontos += 100;
+		Game.Gobals.alienDown++;
+		Game.Gobals.pontos += 100;
 	}
 
 }

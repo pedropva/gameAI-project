@@ -12,7 +12,7 @@ namespace Movement {
 		float movingTurnSpeed = 360; //same as the above but for when the character is moving
 
 		public bool onGround; //if true the character is on the ground
-
+		private int nFramesPathfinding = 100; // we will run the pathfinding every nFramesPathfinding
 		//Our reference to the animator
 		Animator animator; 
 
@@ -47,11 +47,37 @@ namespace Movement {
 		float newRadius;
 		public int raycatHitsCount = 0; 
 
+		// every 2 seconds perform the print()
+		private static IEnumerator WaitAndPrint(float waitTime, int nFramesPathfinding) {
+			while (true) {
+
+				yield return new WaitForSeconds (waitTime);
+				yield return new WaitForEndOfFrame ();
+//				Debug.Log ("WaitAndPrint " + Time.time);
+				Debug.Log ("Frame: " + Time.frameCount);
+//				Debug.Log ("Frame: " + Time.frameCount % nFramesPathfinding);
+				if ((Time.frameCount % nFramesPathfinding) == 1) {
+					Debug.Log ("Frame: " + Time.frameCount);	
+				}
+			}
+		}
+
 		// Use this for initialization
 		void Start () {
 
 			//Get the first animator you will find in the children
 			animator = GetComponentInChildren<Animator> ();
+
+
+
+			//IEnumerator coroutine;
+			//		coroutine = WaitAndPrint(2.0f);
+			//		StartCoroutine(coroutine);
+			Debug.Log ("Starting " + Time.time);
+			StartCoroutine (WaitAndPrint (2.0F, nFramesPathfinding));
+			Debug.Log ("Done " + Time.time);
+
+
 
 
 			//Call the functions that set's up the Animator
@@ -173,10 +199,9 @@ namespace Movement {
 			Vector3 targetDirection = target.transform.position - curPos;
 
 			//try to find a valid path
-			UnityEngine.AI.NavMeshTriangulation navTriangles = UnityEngine.AI.NavMesh.CalculateTriangulation (); // get baked Navigation Mesh Data;
-			Vector3[] vertices = navTriangles.vertices;
-			Vector3 closest = findClosestNode(curPos, vertices);
-			Debug.Log (closest);
+
+			Vector3 closest = Pathfinder.findClosestNode(curPos, Game.Gobals.graph);
+
 			targetDirection = closest - curPos;
 
 
@@ -209,39 +234,22 @@ namespace Movement {
 				animator.SetBool ("Attack", false);
 			}
 		}
-		Vector3 findClosestNode(Vector3 curPos,Vector3[] vertices){
-			float closestDistance = (vertices[0] - curPos).sqrMagnitude; //initiate with any position
-			Vector3 closestVertice = vertices[0];
-			foreach (Vector3 vertice in vertices) {
-				float thisDistance = (vertice - curPos).sqrMagnitude;
-				if (thisDistance < closestDistance) {
-					closestDistance = thisDistance;
-					closestVertice = vertice;
-				} 
-			}
-			return closestVertice;
-		}
-		Node[] calculateAllDistances(Vector3[] vertices){
-			Node[] graph;
-			foreach (Vector3 vertice in vertices) {
-				foreach (Vector3 vertice in vertices) {
-					float thisDistance = (vertice - curPos).sqrMagnitude;
-					Node  = ;
-			}
-		}
-		Vector3 aStar(Vector3 curPos,Vector3[] vertices){
-			Vector3[] open; // the set of nodes to be explored
-			Vector3[] closed; //the set of nodes already explored
-			int closedCount = 0;
-			int totalNodes = vertices.Length; // total of nodes in the graph
-			open += curPos; // Add the starting node
-			bool foundPath; // If we found a path to the destination node
 
-			while (!foundPath && closedCount < totalNodes) {
-				current = new MinHeapNode(start, H(start, end));
-			}
 
-		}
+//		Vector3 aStar(Vector3 curPos,Vector3[] vertices){
+//			Vector3[] open = new Vector3[vertices.Length]; // the set of nodes to be explored
+//			Vector3[] closed = new Vector3[vertices.Length]; //the set of nodes already explored
+//			int closedCount = 0;
+//			int totalNodes = vertices.Length; // total of nodes in the graph
+//			open[0] = curPos; // Add the starting node
+//			bool foundPath; // If we found a path to the destination node
+//
+//			while (!foundPath && closedCount < totalNodes) {
+//				
+//			}
+//
+//		}
+//
 		void ConvertMove ()
 		{
 			// convert the world relative move vector into a local-relative

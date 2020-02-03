@@ -56,7 +56,7 @@ public class UserInput : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		ControleGame.vida=health;
+		Game.Gobals.vida=health;
 		//Setup our camera reference
 		if(Camera.main != null)
 		{
@@ -362,7 +362,7 @@ public class UserInput : MonoBehaviour {
 			anim.SetBool ("Death", true);
 		} else {
 			health--;
-			ControleGame.vida=health;
+			Game.Gobals.vida = health;
 		}
 	}
 }

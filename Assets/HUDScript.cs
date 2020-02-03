@@ -19,24 +19,24 @@ public class HUDScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		pontos.text = "Pontos: " + ControleGame.pontos;
-		vida.text = "Vida: " + ControleGame.vida * 10;
-		balas.text = "Tiros restantes: " + ControleGame.balas;
-		inimigos.text = "Inimigos restantes: " + ControleGame.inimigos;
-		if (ControleGame.vida <= 0) {
+		pontos.text = "Pontos: " + Game.Gobals.pontos;
+		vida.text = "Vida: " + Game.Gobals.vida * 10;
+		balas.text = "Tiros restantes: " + Game.Gobals.balas;
+		inimigos.text = "Inimigos restantes: " + Game.Gobals.inimigos;
+		if (Game.Gobals.vida <= 0) {
 			gameover.gameObject.SetActive(true);
 			btnMenu.gameObject.SetActive(true);
 		}
 	}
 	public void IniciarJogo(string nome)
 	{
-		ControleGame.pontos = 0;
-		ControleGame.vida = 0;
-		ControleGame.balas = 0;
-		ControleGame.inimigos = 0;
-		ControleGame.shotsFired = 0;
-		ControleGame.LandedShots = 0;
-		ControleGame.alienDown = 0;
+		Game.Gobals.pontos = 0;
+		Game.Gobals.vida = 0;
+		Game.Gobals.balas = 0;
+		Game.Gobals.inimigos = 0;
+		Game.Gobals.shotsFired = 0;
+		Game.Gobals.LandedShots = 0;
+		Game.Gobals.alienDown = 0;
 		SceneManager.LoadSceneAsync (nome);
 	}
 }

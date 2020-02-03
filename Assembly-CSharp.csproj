@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{CD6B817E-9B81-41C5-3A4D-FA5D2FD8740D}</ProjectGuid>
+    <ProjectGuid>{11184EA7-B708-8973-BA1D-AAB4BA6E12FF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -39,10 +39,10 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="UnityEngine">
-      <HintPath>C:/Program Files/Unity Pedro/Editor/Data/Managed/UnityEngine.dll</HintPath>
+      <HintPath>D:/programs/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor">
-      <HintPath>C:/Program Files/Unity Pedro/Editor/Data/Managed/UnityEditor.dll</HintPath>
+      <HintPath>D:/programs/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -101,9 +101,10 @@
      <Compile Include="Assets\Scripts\Enemie.cs" />
      <Compile Include="Assets\Scripts\EnemyMove.cs" />
      <Compile Include="Assets\Scripts\FreeCameraLook.cs" />
-     <Compile Include="Assets\Scripts\MinHeap.cs" />
+     <Compile Include="Assets\Scripts\Gobals.cs" />
      <Compile Include="Assets\Scripts\Node.cs" />
      <Compile Include="Assets\Scripts\PanelManager.cs" />
+     <Compile Include="Assets\Scripts\Pathfinder.cs" />
      <Compile Include="Assets\Scripts\Pivot.cs" />
      <Compile Include="Assets\Scripts\ResizePanel.cs" />
      <Compile Include="Assets\Scripts\ScriptCamera.cs" />
@@ -142,27 +143,27 @@
      <None Include="Assets\WorldMaterialsFree\WorldMatFree.shader" />
      <None Include="Assets\BasicBeamShot\HowToUse_EN.txt" />
  <Reference Include="UnityEngine.UI">
- <HintPath>C:/Program Files/Unity Pedro/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ <HintPath>D:/programs/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
- <HintPath>C:/Program Files/Unity Pedro/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ <HintPath>D:/programs/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.PlaymodeTestsRunner">
- <HintPath>C:/Program Files/Unity Pedro/Editor/Data/UnityExtensions/Unity/PlaymodeTestsRunner/UnityEngine.PlaymodeTestsRunner.dll</HintPath>
+ <HintPath>D:/programs/Unity/Editor/Data/UnityExtensions/Unity/PlaymodeTestsRunner/UnityEngine.PlaymodeTestsRunner.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Analytics">
- <HintPath>C:/Program Files/Unity Pedro/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
+ <HintPath>D:/programs/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.HoloLens">
- <HintPath>C:/Program Files/Unity Pedro/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
+ <HintPath>D:/programs/Unity/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.VR">
- <HintPath>C:/Program Files/Unity Pedro/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
+ <HintPath>D:/programs/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{F3384E21-E431-7047-55DC-5449C091A1A5}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+      <Project>{D950AB22-DF1B-BB2A-DA79-ACE6CBA0FF6C}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

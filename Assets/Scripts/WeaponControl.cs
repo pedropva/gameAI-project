@@ -94,12 +94,12 @@ public class WeaponControl : MonoBehaviour {
 			if(curAmmo > 0)
 			{
 				curAmmo --;
-				ControleGame.balas = curAmmo;
+				Game.Gobals.balas = curAmmo;
 				//bulletPart.Emit(1);
 				audioSource.Play();
 
 				this.transform.GetComponent<MultiShooter> ().BasicBeamAttack();
-				ControleGame.shotsFired++;
+				Game.Gobals.shotsFired++;
 				fireBullet = false;
 				fire = false;	
 				return true;
