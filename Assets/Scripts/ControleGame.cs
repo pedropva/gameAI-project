@@ -24,7 +24,7 @@ public class ControleGame: MonoBehaviour {
 		}
 		foreach (Movement.Node node1 in graph) {
 			foreach (Movement.Node node2 in graph) {
-				float distance = (node1.GetPosition() - node2.GetPosition()).sqrMagnitude;
+				float distance = (node1.position - node2.position).sqrMagnitude;
 				node1.updateNeighborDists (distance, node2);
 			}
 		}

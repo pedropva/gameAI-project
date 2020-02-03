@@ -12,7 +12,7 @@ namespace Movement {
 		float movingTurnSpeed = 360; //same as the above but for when the character is moving
 
 		public bool onGround; //if true the character is on the ground
-		private int nFramesPathfinding = 100; // we will run the pathfinding every nFramesPathfinding
+		private static int nFramesPathfinding = 60; // we will run the pathfinding every nFramesPathfinding
 		//Our reference to the animator
 		Animator animator; 
 
@@ -48,17 +48,38 @@ namespace Movement {
 		public int raycatHitsCount = 0; 
 
 		// every 2 seconds perform the print()
-		private static IEnumerator WaitAndPrint(float waitTime, int nFramesPathfinding) {
-			while (true) {
+		public static IEnumerator targetingCoroutine(AlienEnemy alien, EnemyMove movementScript) {
+			int nNodes = 0;
 
-				yield return new WaitForSeconds (waitTime);
-				yield return new WaitForEndOfFrame ();
-//				Debug.Log ("WaitAndPrint " + Time.time);
-				Debug.Log ("Frame: " + Time.frameCount);
-//				Debug.Log ("Frame: " + Time.frameCount % nFramesPathfinding);
-				if ((Time.frameCount % nFramesPathfinding) == 1) {
-					Debug.Log ("Frame: " + Time.frameCount);	
+			while (true) {
+				if (Game.Gobals.graph != null){
+					yield return new WaitForEndOfFrame ();
+					//Debug.Log ("WaitAndPrint " + Time.time);
+					//Debug.Log ("Frame: " + Time.frameCount);
+					if ((Time.frameCount % nFramesPathfinding) == 1) {
+						Debug.Log ("Frame: " + Time.frameCount);
+					}
 				}
+				else{
+					Debug.Log ("Waiting for graph to be ready.");
+					yield return new WaitForSeconds (2.0f);
+				}
+				//we decide whether to move or not
+				if (!alien.dead) // of the character is alive
+				{
+					if (alien.currentTarget != null && alien.distanceToTarget > alien.attackRange) { //if we have a target and we are out of the attack range we should go after it
+						//pass it to our move function from our character movement script
+						movementScript.MoveToTarget (alien.currentTarget.transform.position, alien.GetWalkMultiplier ());
+					} else {
+						movementScript.TurnAtTarget(alien.currentTarget); // stop and just face the target
+					}
+				}
+				else //if the character is dead
+				{
+					//clear targets
+					alien.currentTarget = null;
+				}
+
 			}
 		}
 
@@ -69,13 +90,6 @@ namespace Movement {
 			animator = GetComponentInChildren<Animator> ();
 
 
-
-			//IEnumerator coroutine;
-			//		coroutine = WaitAndPrint(2.0f);
-			//		StartCoroutine(coroutine);
-			Debug.Log ("Starting " + Time.time);
-			StartCoroutine (WaitAndPrint (2.0F, nFramesPathfinding));
-			Debug.Log ("Done " + Time.time);
 
 
 
@@ -191,18 +205,12 @@ namespace Movement {
 			Move (new Vector3 (0f, 0f, 0f),lookPos);
 		}
 
-		public void MoveToTarget(GameObject target, float walkMultiplier)
+		public void MoveToTarget(Vector3 targetPos, float walkMultiplier)
 		{	
 			Vector3 move;
 			Vector3 lookPos;
 			Vector3 curPos = this.transform.position;
-			Vector3 targetDirection = target.transform.position - curPos;
-
-			//try to find a valid path
-
-			Vector3 closest = Pathfinder.findClosestNode(curPos, Game.Gobals.graph);
-
-			targetDirection = closest - curPos;
+			Vector3 targetDirection = targetPos - curPos;
 
 
 			targetDirection = targetDirection.normalized;
@@ -236,20 +244,6 @@ namespace Movement {
 		}
 
 
-//		Vector3 aStar(Vector3 curPos,Vector3[] vertices){
-//			Vector3[] open = new Vector3[vertices.Length]; // the set of nodes to be explored
-//			Vector3[] closed = new Vector3[vertices.Length]; //the set of nodes already explored
-//			int closedCount = 0;
-//			int totalNodes = vertices.Length; // total of nodes in the graph
-//			open[0] = curPos; // Add the starting node
-//			bool foundPath; // If we found a path to the destination node
-//
-//			while (!foundPath && closedCount < totalNodes) {
-//				
-//			}
-//
-//		}
-//
 		void ConvertMove ()
 		{
 			// convert the world relative move vector into a local-relative

@@ -8,14 +8,14 @@ namespace Movement
 {
 	public class Node
 	{
-		Vector3 position; //postition of this node
-		Node[] neighboors; //neightboors of this node
-		float[] neighboorsDists; //distance to each neightboor of this node
-		float Gcost; // distance from the starting node
-		float Hcost; //Heuristic distance from the end node
-		float Fcost; //Gcost + Hcost
-		bool explored; // if this node was already explored before
-		Node parent; // when we explore or update a node we have to store its parent node so we can make the way back
+		public Vector3 position; //postition of this node
+		public Node[] neighboors; //neightboors of this node
+		public float[] neighboorsDists; //distance to each neightboor of this node
+		public float Gcost; // distance from the starting node
+		public float Hcost; //Heuristic distance from the end node
+		public float Fcost; //Gcost + Hcost
+		public bool explored; // if this node was already explored before
+		public Node parent; // when we explore or update a node we have to store its parent node so we can make the way back
 
 		public Node (Vector3 position)
 		{
@@ -37,9 +37,6 @@ namespace Movement
 			this.explored = true; // if this node was already explored 
 			//update G costs for all neighboors
 			//if the new G cost is less then point to the one who updated it
-		}
-		public Vector3 GetPosition(){
-			return this.position;
 		}
 		public void updateNeighborDists(float distance, Node proposedNeighbor){
 			//receives a proposed neighbor, if its closer than any of its 8 neightbors, then it becomes a neighbor

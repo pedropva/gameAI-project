@@ -34,9 +34,12 @@ public class AlienEnemy : MonoBehaviour {
 	{
 		//and our Character Movement
 		character = GetComponent<Movement.EnemyMove>();
+
 		//and our animator
 		anim = GetComponent<Animator>();
 		currentTarget = GameObject.Find ("Player");
+		//start the moving thing
+		StartCoroutine (Movement.EnemyMove.targetingCoroutine (this,character));
 	}
 		
 	void Update()
@@ -53,7 +56,7 @@ public class AlienEnemy : MonoBehaviour {
 		}
 	}
 
-	float GetWalkMultiplier()
+	public float GetWalkMultiplier()
 	{
 		if (runToggle) {
 			return runSpeed;
@@ -63,20 +66,7 @@ public class AlienEnemy : MonoBehaviour {
 
 	void FixedUpdate () 
 	{
-		if (!dead) // of the character is alive
-		{
-			if (currentTarget != null && distanceToTarget > attackRange) { //if we have a target and we are out of the attack range we should go after it
-				//pass it to our move function from our character movement script
-				character.MoveToTarget (currentTarget, this.GetWalkMultiplier ());
-			} else {
-				character.TurnAtTarget(currentTarget); // stop and just face the target
-			}
-		}
-		else //if the character is dead
-		{
-			//clear targets
-			currentTarget = null;
-		}
+		
 	}
 	public void MeleeHit(float punchForce){
 		Vector3 direction =  this.transform.position-currentTarget.transform.position;
