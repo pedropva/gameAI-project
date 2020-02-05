@@ -52,6 +52,15 @@ namespace Movement
 				}
 			}
 		}
+		public void findNeighbors(Vector3[] graph){
+			foreach (Node node in graph) {
+				float distance = (this.position - node.position).sqrMagnitude;
+				this.updateNeighborDists (distance, node);
+			}
+		}
+		public void updateCosts(){
+			Debug.Log ("Update costs");
+		}
 	}
 }
 

@@ -31,15 +31,21 @@ namespace Movement
 			return nodeIndex;
 		}
 		public static Vector3 aStar(Vector3 curPos,Node[] graph){
-			Node[] open = new Node[graph.Length]; // the set of nodes to be explored
-			Node[] closed = new Node[graph.Length]; //the set of nodes already explored
+			ArrayList open = new ArrayList(graph.Length); // the set of nodes to be explored
+			ArrayList closed = new Node[graph.Length]; //the set of nodes already explored
 			int closedCount = 0;
 			int totalNodes = graph.Length; // total of nodes in the graph
-			open[0] = curPos; // Add the starting node
+
+			Node cur = new Node (curPos);
+			cur.findNeighbors();
+			open[0] = cur; // Add the starting node
 			bool foundPath; // If we found a path to the destination node
 			Node current;
 			while (!foundPath && closedCount < totalNodes) {
-				current = findSmallestCost(open)
+				int curIndex = findSmallestCost (open);
+				current = open[curIndex];
+				open.RemoveAt (curIndex);
+
 			}
 
 		}

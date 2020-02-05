@@ -22,11 +22,8 @@ public class ControleGame: MonoBehaviour {
 			Movement.Node cur = new Movement.Node (vertices [i]);
 			graph[i] = cur;
 		}
-		foreach (Movement.Node node1 in graph) {
-			foreach (Movement.Node node2 in graph) {
-				float distance = (node1.position - node2.position).sqrMagnitude;
-				node1.updateNeighborDists (distance, node2);
-			}
+		foreach (Movement.Node node in graph) {
+			node.findNeighbors(graph);
 		}
 		return graph;
 	}
