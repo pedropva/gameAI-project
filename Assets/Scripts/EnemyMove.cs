@@ -12,7 +12,7 @@ namespace Movement {
 		float movingTurnSpeed = 360; //same as the above but for when the character is moving
 
 		public bool onGround; //if true the character is on the ground
-		private static int nFramesPathfinding = 60; // we will run the pathfinding every nFramesPathfinding
+		private static int nFramesPathfinding = 120; // we will run the pathfinding every nFramesPathfinding
 		//Our reference to the animator
 		Animator animator; 
 
@@ -47,6 +47,8 @@ namespace Movement {
 		float newRadius;
 		public int raycatHitsCount = 0; 
 
+		public ArrayList currentPath; // this will hold our current path to the target
+		public int indexOfCurNodePath;
 		// every 2 seconds perform the print()
 		public static IEnumerator targetingCoroutine(AlienEnemy alien, EnemyMove movementScript) {
 			int nNodes = 0;
@@ -58,6 +60,8 @@ namespace Movement {
 					//Debug.Log ("Frame: " + Time.frameCount);
 					if ((Time.frameCount % nFramesPathfinding) == 1) {
 						Debug.Log ("Frame: " + Time.frameCount);
+						movementScript.currentPath = Pathfinder.aStar (movementScript.rigidBody.position, alien.currentTarget.transform.position, Game.Gobals.graph);
+						movementScript.indexOfCurNodePath = 0;
 					}
 				}
 				else{
@@ -68,8 +72,7 @@ namespace Movement {
 				if (!alien.dead) // of the character is alive
 				{
 					if (alien.currentTarget != null && alien.distanceToTarget > alien.attackRange) { //if we have a target and we are out of the attack range we should go after it
-						//pass it to our move function from our character movement script
-						movementScript.MoveToTarget (alien.currentTarget.transform.position, alien.GetWalkMultiplier ());
+						movementScript.FollowPathToTarget(movementScript.currentPath, alien.GetWalkMultiplier ());
 					} else {
 						movementScript.TurnAtTarget(alien.currentTarget); // stop and just face the target
 					}
@@ -187,6 +190,18 @@ namespace Movement {
 
 			//Update the Animator parameters
 			UpdateAnimator ();
+		}
+		public void FollowPathToTarget (ArrayList path,float walkMultiplier){
+			//pass it to our move function from our character movement script
+			float minDist = 0.5f;
+			Node nextNode = (Node) path [indexOfCurNodePath];
+			float distToNextNode = Movement.Node.distanceFunction(this.transform.position, nextNode.position);
+			if (distToNextNode > minDist) {
+				MoveToTarget (this.transform.position, walkMultiplier);
+			} else {
+				indexOfCurNodePath++;
+			}
+
 		}
 		public void TurnAtTarget(GameObject target){
 			Vector3 move;
