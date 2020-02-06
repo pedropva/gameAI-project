@@ -71,7 +71,7 @@ namespace Movement {
 				//we decide whether to move or not
 				if (!alien.dead) // of the character is alive
 				{
-					if (alien.currentTarget != null && alien.distanceToTarget > alien.attackRange) { //if we have a target and we are out of the attack range we should go after it
+					if (alien.currentTarget != null && alien.distanceToTarget > alien.attackRange && movementScript.currentPath != null) { //if we have a target and we are out of the attack range we should go after it
 						movementScript.FollowPathToTarget(movementScript.currentPath, alien.GetWalkMultiplier ());
 					} else {
 						movementScript.TurnAtTarget(alien.currentTarget); // stop and just face the target
@@ -197,9 +197,11 @@ namespace Movement {
 			Node nextNode = (Node) path [indexOfCurNodePath];
 			float distToNextNode = Movement.Node.distanceFunction(this.transform.position, nextNode.position);
 			if (distToNextNode > minDist) {
-				MoveToTarget (this.transform.position, walkMultiplier);
+				MoveToTarget (nextNode.position, walkMultiplier);
 			} else {
-				indexOfCurNodePath++;
+				if (indexOfCurNodePath < path.Count){
+					indexOfCurNodePath++;	
+				}
 			}
 
 		}
