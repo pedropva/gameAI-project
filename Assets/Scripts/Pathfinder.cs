@@ -53,6 +53,30 @@ namespace Movement
 				node.ResetCosts ();
 			}
 		}
+		public static void drawPath(ArrayList path){
+			for (int i = 1; i < path.Count; i++) {
+				Node node = (Node)path [i];
+				Node previousNode = (Node)path [i-1];
+				Debug.DrawLine (node.position, previousNode.position,Color.blue,0.5f);
+			}
+		}
+
+		public static bool comparePaths(ArrayList path1, ArrayList path2){
+			if (path1 == null || path2 ==null) {
+				return false;
+			}
+			if (path1.Count != path2.Count) {
+				return false;
+			}
+			for (int i = 0; i < path1.Count; i++) {
+				Node node1 = (Node)path1 [i];
+				Node node2 = (Node)path2 [i];
+				if (node1.position != node2.position) {
+					return false;
+				}
+			}
+			return true;
+		}
 
 		public static ArrayList aStar(Vector3 startPos, Vector3 destinationPos, Node[] graph){
 			resetGraph (graph);//reset all costs of the graph
@@ -68,11 +92,8 @@ namespace Movement
 			Node closestNodeToStart =  findClosestNode(startPos, graph);
 			open.Add(closestNodeToStart); // Add the starting node
 			// If we found a path to the destination node
-			Debug.Log("startPos: "+ closestNodeToStart.position);
 			Node current;
 			while (closedCount < totalNodes) {
-				Debug.Log ("--------------------------"+closedCount);
-				Debug.Log ("Open:" + open.Count+" Closed:" + closed.Count);
 				if (open.Count == 0) {
 					Debug.LogError ("Open queue is empty! Failed to find a valid path!");
 					return null;
@@ -85,13 +106,13 @@ namespace Movement
 				open.RemoveAt (curIndex);
 
 				if (current == destinationNode) { //maybe we can flexibilize this a bit? since we cant always have a node which is the exact
-					return current.getPath ();
+					ArrayList path = current.getPath ();
+					drawPath(path);
+					return path;
 				}
-				Debug.Log("Neightbors count: "+current.neighbors.Count);
 				for (int i=0 ; i<current.neighbors.Count;i++) {
 					Node neighbour = (Node) current.neighbors [i];
 					//if the node is not in OPEN, OR the path passing by this node is shorter than the path to the neightbour passing by another node
-					Debug.Log("neighbor "+i+", pos: "+ neighbour.position + ", explored:" + neighbour.explored +", not in open:"+!open.Contains (neighbour)+ ", add?:"+(!neighbour.explored && !open.Contains (neighbour) || (current.getPath ().Count + 1 < neighbour.getPath ().Count)));
 					if (!neighbour.explored){
 						if (!open.Contains (neighbour) || (current.getPath ().Count + 1 < neighbour.getPath ().Count)) {
 							//set parent of neightbour to current
@@ -103,6 +124,7 @@ namespace Movement
 
 							if (!open.Contains (neighbour)) {//if neighbour is not in OPEN
 								open.Add (neighbour);//add neighbour to OPEN
+								Debug.DrawLine (current.position, neighbour.position,Color.green,0.5f);
 							}
 						}
 					}

@@ -38,14 +38,14 @@ namespace Movement
 		{
 			this.explored = true; // if this node was already explored 
 		}
-		public void addNeighbor(float distance, Node newNeighbour){
+		public void addNeighbor(Node newNeighbour, float distance){
 			Debug.DrawLine (this.position, newNeighbour.position,Color.red,float.MaxValue);
 			if(this.neighbors.Contains(newNeighbour)){//Array.Exists(this.neighbors, element => element == proposedNeighbour)
 				return;
 			}
 			this.neighbors.Add (newNeighbour);
 			this.neighborsDists.Add (distance);
-			newNeighbour.addNeighbor (distance, this);
+			newNeighbour.addNeighbor (this, distance);
 		}
 
 		public void setParent(float distance, Node newParent){
@@ -61,14 +61,59 @@ namespace Movement
 			return Movement.Node.distanceFunction (this.position, target.position);
 		}
 
-		public static void setupNeighbors(Node[] graph, int[] trianglesIndices){
-			for (int i = 0; i < trianglesIndices.Length-4; i=i+3) {
-				graph[trianglesIndices[i]].addNeighbor (graph[trianglesIndices[i]].distanceToNode (graph[trianglesIndices[i+1]]), graph[trianglesIndices[i+1]]);
-				graph[trianglesIndices[i]].addNeighbor (graph[trianglesIndices[i]].distanceToNode (graph[trianglesIndices[i+2]]), graph[trianglesIndices[i+2]]);
-				graph[trianglesIndices[i+1]].addNeighbor (graph[trianglesIndices[i+1]].distanceToNode (graph[trianglesIndices[i+2]]), graph[trianglesIndices[i+2]]);
+		public static void setupNeighbors(Node[] graph, int[] trianglesIndices, IDictionary<int, Node> map){
+			//Debug.Log ("vertices: " + trianglesIndices.Length + " map:" + map.Count);
+			for (int i = 0; i < trianglesIndices.Length; i=i+3) {
+				//Debug.Log (trianglesIndices[i] +" " +trianglesIndices[i+1]+" "+trianglesIndices[i+2]);
+				Node node1 = (Node) map[trianglesIndices[i]];
+				Node node2 = (Node) map[trianglesIndices[i+1]];
+				Node node3 = (Node) map[trianglesIndices[i+2]];
+				node1.addNeighbor (node2, node1.distanceToNode (node2));
+				node2.addNeighbor (node3, node2.distanceToNode (node3));
+				node1.addNeighbor (node3, node3.distanceToNode (node3));
 			}
 		}
 
+		public static Node[] startGraph(ArrayList vertices, int[] indices){
+			ArrayList uniqueVertices = getUniqueVertices (vertices);
+			Debug.Log (uniqueVertices.Count + " Vertices loaded into the pahtfinding graph!");
+			Node[] graph = new Movement.Node[uniqueVertices.Count];
+			//create graph
+			for(int i=0;i < uniqueVertices.Count;i++) {
+				Vector3 uniqueVertice = (Vector3) uniqueVertices [i];
+				Node cur = new Node (uniqueVertice);
+				graph[i] = cur;
+			}
+
+			IDictionary<int, Node> map = Node.getIndicesMapping (vertices, graph);
+			Node.setupNeighbors(graph,indices, map);
+			return graph;
+		}
+
+		public static IDictionary<int, Node> getIndicesMapping(ArrayList vertices,Node[] graph){
+			IDictionary<int, Node> map = new Dictionary<int, Node>();
+			for (int i = 0; i < vertices.Count; i++) {
+				for (int j = 0; j < graph.Length; j++) {
+					Vector3 vertice = (Vector3) vertices [i];
+
+					if (vertice == graph[j].position) {
+						map.Add (i, graph[j]);
+					}
+				}
+			}
+			return map;
+		}
+
+		public static ArrayList getUniqueVertices(ArrayList vertices){
+			ArrayList unique = new ArrayList();
+			for (int i = 0; i < vertices.Count; i++) {
+				if (!unique.Contains(vertices[i])) {
+					unique.Add (vertices [i]);
+				}
+			}
+			return unique;
+		}
+			
 		public void updateCosts(Node startNode, Node destinationNode){
 			//update G cost
 			this.Gcost = this.getPathLenghtOnWorld ();

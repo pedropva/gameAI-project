@@ -47,8 +47,8 @@ namespace Movement {
 		float newRadius;
 		public int raycatHitsCount = 0; 
 
-		public ArrayList currentPath; // this will hold our current path to the target
-		public int indexOfCurNodePath;
+		public ArrayList currentPath = null; // this will hold our current path to the target
+		public int indexOfCurNodePath = 0;
 		// every 2 seconds perform the print()
 		public static IEnumerator targetingCoroutine(AlienEnemy alien, EnemyMove movementScript) {
 			int nNodes = 0;
@@ -59,9 +59,12 @@ namespace Movement {
 					//Debug.Log ("WaitAndPrint " + Time.time);
 					//Debug.Log ("Frame: " + Time.frameCount);
 					if ((Time.frameCount % nFramesPathfinding) == 1) {
-						Debug.Log ("Frame: " + Time.frameCount);
-						movementScript.currentPath = Pathfinder.aStar (movementScript.rigidBody.position, alien.currentTarget.transform.position, Game.Gobals.graph);
-						movementScript.indexOfCurNodePath = 0;
+						//Debug.Log ("Frame: " + Time.frameCount);
+						ArrayList newPath = Pathfinder.aStar (movementScript.rigidBody.position, alien.currentTarget.transform.position, Game.Gobals.graph);
+						if (!Movement.Pathfinder.comparePaths(movementScript.currentPath, newPath)) {
+							movementScript.currentPath = newPath;
+							movementScript.indexOfCurNodePath = 0;
+						}
 					}
 				}
 				else{
@@ -71,7 +74,12 @@ namespace Movement {
 				//we decide whether to move or not
 				if (!alien.dead) // of the character is alive
 				{
-					if (alien.currentTarget != null && alien.distanceToTarget > alien.attackRange && movementScript.currentPath != null) { //if we have a target and we are out of the attack range we should go after it
+					if (movementScript.currentPath != null &&//if we have a path to our target
+						movementScript.currentPath.Count > 1 &&
+						movementScript.indexOfCurNodePath < movementScript.currentPath.Count &&//that means thes not on the end of the pathSS
+						alien.currentTarget != null && 
+						alien.distanceToTarget > alien.attackRange &&
+						movementScript.currentPath != null) { //if we have a target and we are out of the attack range we should go after it
 						movementScript.FollowPathToTarget(movementScript.currentPath, alien.GetWalkMultiplier ());
 					} else {
 						movementScript.TurnAtTarget(alien.currentTarget); // stop and just face the target
@@ -194,13 +202,14 @@ namespace Movement {
 		public void FollowPathToTarget (ArrayList path,float walkMultiplier){
 			//pass it to our move function from our character movement script
 			float minDist = 0.5f;
-			Node nextNode = (Node) path [indexOfCurNodePath];
-			float distToNextNode = Movement.Node.distanceFunction(this.transform.position, nextNode.position);
+
+			Node nextNode = (Node)path [indexOfCurNodePath];
+			float distToNextNode = Movement.Node.distanceFunction (this.transform.position, nextNode.position);
 			if (distToNextNode > minDist) {
 				MoveToTarget (nextNode.position, walkMultiplier);
 			} else {
-				if (indexOfCurNodePath < path.Count){
-					indexOfCurNodePath++;	
+				if (this.indexOfCurNodePath < path.Count-1) {
+					this.indexOfCurNodePath++;	
 				}
 			}
 
