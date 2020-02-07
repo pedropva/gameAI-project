@@ -39,7 +39,7 @@ namespace Movement
 			this.explored = true; // if this node was already explored 
 		}
 		public void addNeighbor(Node newNeighbour, float distance){
-			Debug.DrawLine (this.position, newNeighbour.position,Color.red,float.MaxValue);
+			//Debug.DrawLine (this.position, newNeighbour.position,Color.red,float.MaxValue);
 			if(this.neighbors.Contains(newNeighbour)){//Array.Exists(this.neighbors, element => element == proposedNeighbour)
 				return;
 			}
