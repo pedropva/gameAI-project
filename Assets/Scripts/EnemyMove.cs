@@ -50,7 +50,7 @@ namespace Movement {
 		public ArrayList currentPath = null; // this will hold our current path to the target
 		public int indexOfCurNodePath = 0;
 		// every 2 seconds perform the print()
-		public static IEnumerator targetingCoroutine(AlienEnemy alien, EnemyMove movementScript) {
+		public static IEnumerator targetingCoroutine(EnemyAlien alien, EnemyMove movementScript) {
 			int nNodes = 0;
 
 			while (true) {
@@ -77,7 +77,7 @@ namespace Movement {
 					yield return new WaitForSeconds (2.0f);
 				}
 				//we decide whether to move or not
-				if (!alien.dead) // of the character is alive
+				if (!alien.dead && alien.anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "damage") //move if the character is alive and not taking damage
 				{
 					if (alien.currentTarget != null && 
 						alien.distanceToTarget > alien.attackRange) { //if we have a target and we are out of the attack range we should go after it
@@ -85,22 +85,15 @@ namespace Movement {
 						if (movementScript.currentPath != null &&//if we have a path to our target
 							movementScript.currentPath.Count > 1 &&
 							movementScript.indexOfCurNodePath < movementScript.currentPath.Count){//that means thes not on the end of the pathSS) {
-
 							movementScript.FollowPathToTarget(movementScript.currentPath, alien.GetWalkMultiplier ());
 						}else{
-							movementScript.MoveToTarget(alien.currentTarget.transform.position, alien.GetWalkMultiplier ());
+							movementScript.MoveToTarget(alien.currentTarget.transform.position, alien.GetWalkMultiplier ());// if we have clear vision line then go for it
 						}
 
-					} else {
+					} else if(alien.currentTarget != null){
 						movementScript.TurnAtTarget(alien.currentTarget); // stop and just face the target
 					}
 				}
-				else //if the character is dead
-				{
-					//clear targets
-					alien.currentTarget = null;
-				}
-
 			}
 		}
 
@@ -225,26 +218,57 @@ namespace Movement {
 
 		}
 		public bool checkNeedToPathfind(Vector3 targetPos){
-			float raycastHeight = 0.5f;
+			return true;
+			float raycastHeight = 1f;
+			Vector3 upOffset = Vector3.up * raycastHeight;
+
+			// original vector:
+			Vector3 forward = targetPos;
+			// up direction:
+			Vector3 up  = Vector3.up;
+			// find right vector:
+			Vector3 right = Vector3.Cross(forward.normalized, up.normalized).normalized;
+			Vector3 left = -right;
+
+			Vector3[] offsets = {upOffset, up,up + left,up + right};
 			float distanceToTarget = Node.distanceFunction (transform.position, targetPos);
 			//Create a ray with origin the character's transform + 0.5 on the y axis and direction the -y axis
-			Ray ray = new Ray (transform.position + Vector3.up * raycastHeight, targetPos); 
+			Vector3 rayStart;
+			Vector3 rayEnd;
 
-			RaycastHit[] hits = Physics.RaycastAll (ray, distanceToTarget); //perform a raycast using that ray for a distance of 0.5
-			//Debug.Log ("got "+ hits.Length + " hits!");
-			rayHitComparer = new RayHitComparer();
-			System.Array.Sort (hits, rayHitComparer); //sort the hits using our comparer (based on distance)
-			raycatHitsCount = hits.Length;
-			foreach (var hit in hits) { //for each of the hits
-				if (hit.transform.tag == "Terrain") {
-					//Debug.Log (hit.transform.tag);
-					Debug.DrawLine (transform.position + Vector3.up * raycastHeight,targetPos,Color.yellow,0.5f);
-					return true;
+			for (int i = 0; i < offsets.Length; i++) {
+				Vector3 newOffSet = offsets[i];
+				rayStart = transform.position + newOffSet;
+				rayEnd = targetPos + newOffSet;
+				Debug.DrawLine (rayStart,rayEnd,Color.red,0.5f);
+				Ray ray = new Ray (rayStart, rayEnd); 
+				RaycastHit[] hits = Physics.RaycastAll (ray, distanceToTarget); //perform a raycast using that ray for a distance of 0.5
+				//Debug.Log ("got "+ hits.Length + " hits!");
+				rayHitComparer = new RayHitComparer();
+				System.Array.Sort (hits, rayHitComparer); //sort the hits using our comparer (based on distance)
+				raycatHitsCount = hits.Length;
+				Debug.DrawLine (rayStart,rayEnd,Color.red,0.5f);
+				foreach (var hit in hits) { //for each of the hits
+					if (hit.transform.tag == "Terrain") {
+						//Debug.Log (hit.transform.tag);
+						Debug.DrawLine (rayStart,rayEnd,Color.red,0.5f);
+						//continue;
+						return true;
+					}
 				}
+				Debug.DrawLine (rayStart,rayEnd,Color.yellow,0.5f);
 			}
-			Debug.DrawLine (transform.position + Vector3.up * raycastHeight,targetPos,Color.green,0.5f);
+
 			return false;
 		}
+
+		public Vector3 RotatePointAroundPivot(Vector3 point,Vector3 pivot,Vector3 angles) {
+			Vector3 dir = point - pivot; // get point direction relative to pivot
+			dir = Quaternion.Euler(angles) * dir; // rotate it
+			point = dir + pivot; // calculate rotated point
+			return point; // return it
+		}
+
 		public void TurnAtTarget(GameObject target){
 			Vector3 move;
 			Vector3 lookPos;
@@ -288,13 +312,6 @@ namespace Movement {
 			this.Move (move, lookPos);
 
 
-
-
-			if (animator.IsInTransition (0)) {
-				//if (animator.GetCurrentAnimatorStateInfo (0).Equals ("Damage")) {
-				animator.SetBool ("Damage", false);
-				animator.SetBool ("Attack", false);
-			}
 		}
 
 
@@ -353,7 +370,7 @@ namespace Movement {
 			if (velocity.y < jumpPower * raycastHeight) { //if the character is not airborne due to a jump
 				//assume that the character is on the air and falling
 				onGround = false;
-				rigidBody.useGravity = true;
+				//rigidBody.useGravity = true;
 				foreach (var hit in hits) { //for each of the hits
 					// check whether we hit a non-trigger collider (and not the character itself)
 
@@ -369,7 +386,7 @@ namespace Movement {
 						}
 
 						onGround = true; //set the on ground variable since we found our collider
-						rigidBody.useGravity = false; //disable gravity since we use the above to stick the character to the ground
+						//rigidBody.useGravity = false; //disable gravity since we use the above to stick the character to the ground
 
 						break; //ignore the rest of the hits
 					}
@@ -402,7 +419,8 @@ namespace Movement {
 					turnAmount += lookAngle * autoTurnSpeed * .001f;
 
 					//stop any rotation speed
-					rigidBody.
+//					rigidBody.maxAngularVelocity(new Vector3 (0f,0f,0f));
+//					rigidBody.
 				}
 			}
 		}
@@ -448,10 +466,10 @@ namespace Movement {
 		{
 			//On the air we still want to move but way different than we move on the ground
 			//So we simply manipulate the passing move inputs 
-			Vector3 airMove = new Vector3(moveVector.x *6, velocity.y, moveVector.z *6);
+			Vector3 airMove = new Vector3(moveVector.x*0.1f, velocity.y, moveVector.z*0.1f);
 			rigidBody.velocity = Vector3.Lerp(velocity,airMove,Time.deltaTime*2);
 
-			rigidBody.useGravity = true;
+			//rigidBody.useGravity = true;
 
 			//and apply extra gravity so that we fall faster
 			Vector3 extraGravityForce = (Physics.gravity * 2);

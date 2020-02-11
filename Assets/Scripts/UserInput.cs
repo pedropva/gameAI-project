@@ -18,7 +18,7 @@ public class UserInput : MonoBehaviour {
 	public GameObject camera;
 	public float camDistanceNormal=-0.8f;
 	public float camDistanceAiming=-0.6f;
-
+	public float hitForce=100;
 	public GameObject myBones;
 
 	public bool lookInCameraDirection; // if we want the character to look at the same direction as the camera
@@ -209,12 +209,7 @@ public class UserInput : MonoBehaviour {
 					//then apply the appropriate force at the correct direction
 					Vector3 direction = hit2.transform.position - transform.position;
 					direction = direction.normalized;
-					hit2.transform.GetComponent<Rigidbody>().AddForce(direction * 200);
-				}
-				else if(hit2.transform.GetComponent<Enemie>())
-				{
-					//or if we hit an object that has a destructible component, then tell it to destruct
-					hit2.transform.GetComponent<Enemie>().hit = true;
+					hit2.transform.GetComponent<Rigidbody>().AddForce(direction * hitForce);
 				}
 			}
 
@@ -281,6 +276,9 @@ public class UserInput : MonoBehaviour {
 		vertical = Input.GetAxis("Vertical");
 
 
+		if (this.transform.position.y < -5f) {
+			Damage ();
+		}
 
 		//if we are not aiming
 		
@@ -310,7 +308,7 @@ public class UserInput : MonoBehaviour {
 
 		else //but if we are aiming
 		{
-			lookInCameraDirection = true;//bug de girar
+			lookInCameraDirection = true;
 			if (camera.GetComponent<FreeCameraLook>()){
 				camera.GetComponent<FreeCameraLook> ().OnAim ();
 			}
@@ -350,19 +348,16 @@ public class UserInput : MonoBehaviour {
 	}
 	public void Hit(){
 		StartCoroutine(Damage());
-
 	}
 	IEnumerator Damage(){
 		yield return new WaitForSecondsRealtime (0.5f);
 		anim.SetBool ("Damage", true);
-
+		health--;
+		Game.Gobals.vida = health;
 		if (health <= 0) {
 			anim.SetBool ("Death", true);
 			this.enabled = false;
 			anim.SetBool ("Death", true);
-		} else {
-			health--;
-			Game.Gobals.vida = health;
-		}
+		} 
 	}
 }

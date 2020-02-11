@@ -9,53 +9,55 @@ public class DayTimeControl : MonoBehaviour {
 	public GameObject alien;
 	private int Naliens=1;
 	private int NaliensToSpawn;
-	public int NMaxAliens=20;
+	public int NMaxAliens=10;
+	public int NMinAliens=5;
 	private bool night=false;
-	private bool spawned=false;
+	private bool newNight=false;
 	public List<GameObject> aliens;
 	private List<GameObject> mortos;
 	void Start () {
 		aliens.Add(GameObject.Find ("Alien_prefab"));
-		NaliensToSpawn = (int) Random.Range (1f, 5f) ;
+		NaliensToSpawn = (int) Random.Range (NMinAliens, NMaxAliens) ;
 		mortos = new List<GameObject> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		float temp = this.transform.rotation.x % 180;
+		float rotPercentage = this.transform.rotation.x % 180;
 		this.transform.Rotate (Vector3.up * (rotationSpeed * Time.deltaTime));
-		if (temp < -0.5f || temp > 0.5f) {
-			night = true;
+		//Debug.Log (rotPercentage);
+		if (rotPercentage < 0.4f && rotPercentage > -0.4f) {
+			Game.Gobals.night = true;
 		} else {
-			spawned = false;
-			night = false;
+			newNight = true;
+			Game.Gobals.night = false;
 		}
-		if(mortos!=null)mortos.Clear();
+		if(mortos!=null)mortos.Clear();//recount dead aliens
 		foreach(GameObject a in aliens){
-			if(a.GetComponentInParent<AlienEnemy>().dead){
+			if(a.GetComponentInParent<EnemyAlien>().dead){
 				mortos.Add (a);
 				Naliens= aliens.Count - mortos.Count;
 			}
 		}
-		Game.Gobals.inimigos= Naliens;
-		if (night==true && spawned ==false) {
-			if (Naliens < NMaxAliens + 5) {
-				//apaga os mortos
-				if (mortos != null) {
-					foreach (GameObject m in mortos) {
-						aliens.Remove (m);
-						Destroy (m);
-					}
+		Game.Gobals.inimigos = Naliens;
+		if (Game.Gobals.night==true && (Game.Gobals.inimigos==0)) { // || newNight==true//at least wave per night?
+			//apaga os mortos
+			if (mortos != null) {
+				foreach (GameObject m in mortos) {
+					aliens.Remove (m);
+					Destroy (m);
 				}
-				for (int i = 0; i < NaliensToSpawn; i++) {
-					Vector3 position = new Vector3 (Random.Range (caracter.position.x + 10f, caracter.position.x + 50f), caracter.position.y, Random.Range (caracter.position.z + 10f, caracter.position.z + 50f));
-					aliens.Add(Instantiate (alien, position, Quaternion.identity));	
-					Naliens++;
-				}
-				spawned=true;
-				NaliensToSpawn = (int) Random.Range (1f, 5f);
 			}
+			for (int i = 0; i < NaliensToSpawn; i++) {
+				Vector3 position = new Vector3 (Random.Range (caracter.position.x + 50f, caracter.position.x - 50f), caracter.position.y, Random.Range (caracter.position.z + 50f, caracter.position.z - 50f));
+				aliens.Add(Instantiate (alien, position, Quaternion.identity));	
+				Naliens++;
+			}
+			Game.Gobals.waveNumber++;
+			newNight=false;
+			NaliensToSpawn = (int) Random.Range (NMinAliens, NMaxAliens);
+			NMaxAliens++;
+			NMinAliens++;
 		}
 	}
-
 }

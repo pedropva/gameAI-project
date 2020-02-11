@@ -95,7 +95,8 @@ namespace Movement
 			Node current;
 			while (closedCount < totalNodes) {
 				if (open.Count == 0) {
-					Debug.LogError ("Open queue is empty! Failed to find a valid path!");
+					//Debug.LogError ("Open queue is empty! Failed to find a valid path!");
+					Debug.LogWarning ("Open queue is empty! Failed to find a valid path!");
 					return null;
 				}
 				int curIndex = Pathfinder.findSmallestCost (open);

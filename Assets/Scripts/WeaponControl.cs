@@ -127,7 +127,7 @@ public class WeaponControl : MonoBehaviour {
 		Vector3 direction = other.transform.position - this.transform.position;
 		direction = direction.normalized;
 		if (weaponType == WeaponManager.WeaponType.Melee && fire) {
-			if (other.GetComponentInParent<AlienEnemy> ()) {
+			if (other.GetComponentInParent<EnemyAlien> ()) {
 				anim.SetBool("Attack",true);
 			}else if (other.attachedRigidbody) {
 				other.attachedRigidbody.AddForce (direction * 1000);

@@ -92,12 +92,17 @@ namespace Movement
 
 		public static IDictionary<int, Node> getIndicesMapping(ArrayList vertices,Node[] graph){
 			IDictionary<int, Node> map = new Dictionary<int, Node>();
+			int index=-1;
 			for (int i = 0; i < vertices.Count; i++) {
 				for (int j = 0; j < graph.Length; j++) {
 					Vector3 vertice = (Vector3) vertices [i];
-
-					if (vertice == graph[j].position) {
-						map.Add (i, graph[j]);
+					try {
+						if (vertice == graph[j].position) {
+							map.Add (i, graph[j]);
+							index = j;
+						}
+					} catch (Exception ex) {
+						Debug.LogError ("before index:"+index + " now index" + j);
 					}
 				}
 			}
@@ -106,9 +111,18 @@ namespace Movement
 
 		public static ArrayList getUniqueVertices(ArrayList vertices){
 			ArrayList unique = new ArrayList();
+			bool hasDuplicate = false;
 			for (int i = 0; i < vertices.Count; i++) {
-				if (!unique.Contains(vertices[i])) {
-					unique.Add (vertices [i]);
+				hasDuplicate = false;
+				Vector3 vertice1 = (Vector3) vertices [i];
+				for (int j = 0; j < unique.Count; j++) {
+					Vector3 vertice2 = (Vector3) unique [j];
+					if (vertice1 == vertice2) {
+						hasDuplicate = true;
+					}
+				}
+				if (!hasDuplicate) {
+					unique.Add (vertice1);
 				}
 			}
 			return unique;
