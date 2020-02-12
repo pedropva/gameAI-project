@@ -39,7 +39,7 @@ public class EnemyAlien : MonoBehaviour {
 			anim.SetBool ("Attack", false);
 		}
 		if (this.transform.position.y < -5f) {
-			Die ();
+			teleportBackToMap ();
 		}
 		if (currentTarget != null && currentTarget.GetComponent<UserInput> ().health == 0) {
 			currentTarget = null;
@@ -53,6 +53,11 @@ public class EnemyAlien : MonoBehaviour {
 				anim.SetBool ("Attack", false);	
 			}
 		}
+	}
+	public void teleportBackToMap(){
+		Vector3 targetPos = currentTarget.transform.position;
+		Vector3 newPos = new Vector3 (Random.Range (targetPos.x + 50f, targetPos.x - 50f), targetPos.y, Random.Range (targetPos.z + 50f, targetPos.z - 50f));
+		this.transform.position = newPos;
 	}
 
 	public float GetWalkMultiplier()

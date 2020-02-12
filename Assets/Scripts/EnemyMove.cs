@@ -218,7 +218,6 @@ namespace Movement {
 
 		}
 		public bool checkNeedToPathfind(Vector3 targetPos){
-			return true;
 			float raycastHeight = 1f;
 			Vector3 upOffset = Vector3.up * raycastHeight;
 
@@ -230,35 +229,25 @@ namespace Movement {
 			Vector3 right = Vector3.Cross(forward.normalized, up.normalized).normalized;
 			Vector3 left = -right;
 
-			Vector3[] offsets = {upOffset, up,up + left,up + right};
+			//Vector3[] offsets = {upOffset, up+up,up + left,up + right};
 			float distanceToTarget = Node.distanceFunction (transform.position, targetPos);
 			//Create a ray with origin the character's transform + 0.5 on the y axis and direction the -y axis
 			Vector3 rayStart;
 			Vector3 rayEnd;
 
-			for (int i = 0; i < offsets.Length; i++) {
-				Vector3 newOffSet = offsets[i];
-				rayStart = transform.position + newOffSet;
-				rayEnd = targetPos + newOffSet;
-				Debug.DrawLine (rayStart,rayEnd,Color.red,0.5f);
-				Ray ray = new Ray (rayStart, rayEnd); 
-				RaycastHit[] hits = Physics.RaycastAll (ray, distanceToTarget); //perform a raycast using that ray for a distance of 0.5
-				//Debug.Log ("got "+ hits.Length + " hits!");
-				rayHitComparer = new RayHitComparer();
-				System.Array.Sort (hits, rayHitComparer); //sort the hits using our comparer (based on distance)
-				raycatHitsCount = hits.Length;
-				Debug.DrawLine (rayStart,rayEnd,Color.red,0.5f);
-				foreach (var hit in hits) { //for each of the hits
-					if (hit.transform.tag == "Terrain") {
-						//Debug.Log (hit.transform.tag);
-						Debug.DrawLine (rayStart,rayEnd,Color.red,0.5f);
-						//continue;
+			rayStart = transform.position + up*2;
+			rayEnd = targetPos + up*2;
+			Ray ray = new Ray (rayStart, rayEnd); 
+			RaycastHit[] hits = Physics.SphereCastAll (rayStart, 2f, rayEnd, distanceToTarget);
+			if (hits.Length !=0) {//Physics.SphereCast(ray,1f) 
+				foreach (var hit in hits) {
+					if (hit.collider.gameObject.CompareTag("Terrain")) {
+						Debug.DrawLine (rayStart, rayEnd, Color.red, 0.5f);
 						return true;
 					}
 				}
-				Debug.DrawLine (rayStart,rayEnd,Color.yellow,0.5f);
 			}
-
+			Debug.DrawLine (rayStart,rayEnd,Color.yellow,0.5f);
 			return false;
 		}
 

@@ -277,7 +277,8 @@ public class UserInput : MonoBehaviour {
 
 
 		if (this.transform.position.y < -5f) {
-			Damage ();
+			Debug.Log ("Damage");
+			StartCoroutine(Damage());
 		}
 
 		//if we are not aiming
@@ -352,8 +353,10 @@ public class UserInput : MonoBehaviour {
 	IEnumerator Damage(){
 		yield return new WaitForSecondsRealtime (0.5f);
 		anim.SetBool ("Damage", true);
-		health--;
-		Game.Gobals.vida = health;
+		if (health >0) {
+			health--;	
+			Game.Gobals.vida = health;
+		}
 		if (health <= 0) {
 			anim.SetBool ("Death", true);
 			this.enabled = false;
